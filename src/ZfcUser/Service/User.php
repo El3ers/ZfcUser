@@ -21,6 +21,11 @@ class User extends EventProvider implements ServiceManagerAwareInterface
     protected $userMapper;
 
     /**
+     * @var IdentityMapperInterface
+     */
+    protected $identityMapper;
+
+    /**
      * @var AuthenticationService
      */
     protected $authService;
@@ -34,6 +39,12 @@ class User extends EventProvider implements ServiceManagerAwareInterface
      * @var Form
      */
     protected $registerForm;
+
+    /**
+     * @var Form
+     */
+
+    protected $informationForm;
 
     /**
      * @var Form
@@ -64,6 +75,8 @@ class User extends EventProvider implements ServiceManagerAwareInterface
      */
     public function register(array $data)
     {
+
+        // Save User
         $class = $this->getOptions()->getUserEntityClass();
         $user  = new $class;
         $form  = $this->getRegisterForm();
@@ -73,6 +86,21 @@ class User extends EventProvider implements ServiceManagerAwareInterface
         if (!$form->isValid()) {
             return false;
         }
+
+        // Debut Save Identity ****************************************
+        $identityClass = $this->getOptions()->getIdentityEntityClass();
+        $oIdentity = new $identityClass();
+        $oIdentity->setFirstName($data['firstname']);
+        $oIdentity->setLastName($data['lastname']);
+        $oIdentity->setPhoneMobile($data['mobilephone']);
+        $oIdentity->setEmail($data['username']);
+        $oIdentity->setSexe($data['sexe']);
+        $result = $this->getIdentityMapper()->insert($oIdentity);
+        if (!$result) {
+            return false;
+        }
+        $identityId = $result->getGeneratedValue();
+        // Fin save identity ******************************************
 
         $user = $form->getData();
         /* @var $user \ZfcUser\Entity\UserInterface */
@@ -84,9 +112,12 @@ class User extends EventProvider implements ServiceManagerAwareInterface
         if ($this->getOptions()->getEnableUsername()) {
             $user->setUsername($data['username']);
         }
-        if ($this->getOptions()->getEnableDisplayName()) {
+
+        $user->setAlbProfilesId(2);
+        $user->setAlbIdentitiesId($identityId);
+        /*if ($this->getOptions()->getEnableDisplayName()) {
             $user->setDisplayName($data['display_name']);
-        }
+        }*/
 
         // If user state is enabled, set the default state value
         if ($this->getOptions()->getEnableUserState()) {
@@ -99,6 +130,7 @@ class User extends EventProvider implements ServiceManagerAwareInterface
         $this->getEventManager()->trigger(__FUNCTION__.'.post', $this, array('user' => $user, 'form' => $form));
         return $user;
     }
+
 
     /**
      * change the current users password
@@ -122,6 +154,35 @@ class User extends EventProvider implements ServiceManagerAwareInterface
 
         $pass = $bcrypt->create($newPass);
         $currentUser->setPassword($pass);
+
+        $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $currentUser));
+        $this->getUserMapper()->update($currentUser);
+        $this->getEventManager()->trigger(__FUNCTION__.'.post', $this, array('user' => $currentUser));
+
+        return true;
+    }
+
+    public function changeInformation(array $data)
+    {
+        $currentUser = $this->getAuthService()->getIdentity();
+
+        $oldPass = $data['credential'];
+        $newPass = $data['newCredential'];
+
+        $bcrypt = new Bcrypt;
+        $bcrypt->setCost($this->getOptions()->getPasswordCost());
+
+        if (!$bcrypt->verify($oldPass, $currentUser->getPassword())) {
+            return false;
+        }
+
+        $pass = $bcrypt->create($newPass);
+        $currentUser->setPassword($pass);
+        $currentUser->setFirstName($data['firstname']);
+        $currentUser->setLastName($data['lastname']);
+        $currentUser->setPhoneMobile($data['mobilephone']);
+        $currentUser->setSexe($data['sexe']);
+
 
         $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $currentUser));
         $this->getUserMapper()->update($currentUser);
@@ -161,6 +222,19 @@ class User extends EventProvider implements ServiceManagerAwareInterface
             $this->userMapper = $this->getServiceManager()->get('zfcuser_user_mapper');
         }
         return $this->userMapper;
+    }
+
+    /**
+     * getUserMapper
+     *
+     * @return IdentityMapperInterface
+     */
+    public function getIdentityMapper()
+    {
+        if (null === $this->identityMapper) {
+            $this->identityMapper = $this->getServiceManager()->get('zfcuser_identity_mapper');
+        }
+        return $this->identityMapper;
     }
 
     /**

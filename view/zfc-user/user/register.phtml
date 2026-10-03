@@ -1,6 +1,5 @@
-<h1><?php echo $this->translate('Register'); ?></h1>
-
 <?php
+$this->headScript()->prependFile($this->basePath() . '/js/zfcuser/register.js');
 if (!$this->enableRegistration) {
     print "Registration is disabled";
     return;
@@ -9,24 +8,85 @@ $form = $this->registerForm;
 $form->prepare();
 $form->setAttribute('action', $this->url('zfcuser/register'));
 $form->setAttribute('method', 'post');
+$form->setAttribute('class', 'form-horizontal');
+$form->get('submit')->setAttribute('class', 'btn btn-primary');
 ?>
-
-<?php echo $this->form()->openTag($form) ?>
-    <dl class="zend_form">
-    <?php foreach ($form as $element): ?>
-        <?php if (!$element instanceof Zend\Form\Element\Button): ?>
-            <dt><?php echo $this->formLabel($element) ?></dt>
-        <?php endif ?>
-        <?php if ($element instanceof Zend\Form\Element\Button): ?>
-            <dd><?php echo $this->formButton($element) ?></dd>
-        <?php elseif ($element instanceof Zend\Form\Element\Captcha): ?>
-            <dd><?php echo $this->formCaptcha($element) . $this->formElementErrors($element) ?></dd>
-        <?php else: ?>
-            <dd><?php echo $this->formInput($element) . $this->formElementErrors($element) ?></dd>
-        <?php endif ?>
-    <?php endforeach ?>
-    </dl>
-    <?php if ($this->redirect): ?>
-        <input type="hidden" name="redirect" value="<?php echo $this->escapeHtml($this->redirect) ?>" />
-    <?php endif ?>
-<?php echo $this->form()->closeTag() ?>
+<div class="row" style="">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <br>
+        <h3 class="title-green"><span class="glyphicon glyphicon-edit"></span> <?php echo $this->translate('Sign up'); ?></h3>
+        <div class="well">
+            <?php echo $this->form()->openTag($form)?>
+              <div class="form-group">
+                <div class="col-sm-12">
+                 <?php echo $this->formLabel($form->get('sexe'))?>
+                  <?php echo $this->formRadio($form->get('sexe'))?>
+                  <?php echo $this->formElementErrors($form->get('sexe'))?>
+                </div>
+              </div>
+              <div class="form-group">
+                <?php /*=$this->formLabel($form->get('firstname'))*/?>
+                <div class="col-sm-7">
+                  <?php echo $this->formInput($form->get('firstname'))?>
+                  <?php echo $this->formElementErrors($form->get('firstname'))?>
+                </div>
+              </div>
+              <div class="form-group">
+                <?php /*=$this->formLabel($form->get('lastname'))*/?>
+                <div class="col-sm-7">
+                  <?php echo $this->formInput($form->get('lastname'))?>
+                  <?php echo $this->formElementErrors($form->get('lastname'))?>
+                </div>
+              </div>
+              <div class="form-group">
+                <?php /*=$this->formLabel($form->get('username'))*/?>
+                <div class="col-sm-12">
+                  <?php echo $this->formInput($form->get('username'))?>
+                  <?php echo $this->formElementErrors($form->get('username'))?>
+                </div>
+              </div>
+              <div class="form-group">
+                <?php /*=$this->formLabel($form->get('password'))*/?>
+                <div class="col-sm-12">
+                  <?php echo $this->formInput($form->get('password'))?>
+                  <?php echo $this->formElementErrors($form->get('password'))?>
+                </div>
+              </div>
+              <div class="form-group">
+                <?php /*=$this->formLabel($form->get('passwordVerify'))*/?>
+                <div class="col-sm-12">
+                  <?php /*=  $this->formInput($form->get('passwordVerify')); */?>
+                  <?php /*=  $this->formElementErrors($form->get('passwordVerify'))*/?>
+                </div>
+              </div>
+              <div class="form-group">
+                <?php /*=$this->formLabel($form->get('firstname'))*/?>
+                <div class="col-sm-12">
+                  <?php echo $this->formInput($form->get('mobilephone'))?>
+                  <?php echo $this->formElementErrors($form->get('mobilephone'))?>
+                </div>
+              </div>
+              <?if ($form->getRegistrationOptions()->getUseRegistrationFormCaptcha()) {?>
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <?php echo $this->formCaptcha($form->get('captcha')) . $this->formElementErrors($form->get('captcha'))?>
+                </div>
+              </div>
+              <?}?>
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <?php echo $this->formInput($form->get('submit'))?>
+                </div>
+              </div>
+              <?php if ($this->redirect): ?>
+                 <input type="hidden" name="redirect" value="<?php echo $this->escapeHtml($this->redirect) ?>" />
+            <?php endif ?>
+            <?php echo $this->form()->closeTag($form)?>
+        </div>
+        <div>
+            <a href="<?php echo $this->url('zfcuser/thawourth26') ?>"><span class="glyphicon glyphicon-hand-left"></span> <?php echo $this->translate('Back to login page'); ?></a>
+        </div>
+    </div>
+    <div class="col-md-3"></div>
+</div>

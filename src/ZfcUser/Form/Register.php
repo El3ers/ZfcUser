@@ -23,17 +23,33 @@ class Register extends Base
         $this->setRegistrationOptions($options);
         parent::__construct($name);
 
-        $this->remove('userId');
+        $this->setAttribute('enctype', 'multipart/form-data');
+
+        //$this->remove('userId');
         if (!$this->getRegistrationOptions()->getEnableUsername()) {
             $this->remove('username');
-        }
+        }/*
         if (!$this->getRegistrationOptions()->getEnableDisplayName()) {
             $this->remove('display_name');
-        }
-        if ($this->getRegistrationOptions()->getUseRegistrationFormCaptcha() && $this->captchaElement) {
+        }*/
+        if (
+            $this->getRegistrationOptions()->getUseRegistrationFormCaptcha() && 
+            $this->captchaElement
+        ) {
             $this->add($this->captchaElement, array('name'=>'captcha'));
         }
-        $this->get('submit')->setLabel('Register');
+
+        $this->add(array(
+            'name' => 'avatar',
+            'attributes' => array(
+                'id' => 'avatar',
+                'type'  => 'Zend\Form\Element\File',
+                'accept'=>"image/bmp,image/gif,image/png,image/jpeg,image/jpg",
+                'class' =>'profile-img'
+            )
+        ));
+
+        $this->get('submit')->setLabel('Inscription');
         $this->getEventManager()->trigger('init', $this);
     }
 

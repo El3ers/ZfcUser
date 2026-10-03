@@ -2,6 +2,8 @@
 
 namespace ZfcUser\Controller;
 
+use Albook\Controller\AbstractController;
+use Comment\Model\Comment;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\ResponseInterface as Response;
@@ -9,13 +11,34 @@ use Zend\Stdlib\Parameters;
 use Zend\View\Model\ViewModel;
 use ZfcUser\Service\User as UserService;
 use ZfcUser\Options\UserControllerOptionsInterface;
+use ZfcUser\Service\Iser as IdentityService;
+use ZfcUser\Options\IserControllerOptionsInterface;
+use Zend\View\Model\JsonModel;
 
-class UserController extends AbstractActionController
+use Annonce\Model\Annonce;
+use Albadmin\Model\Menu;
+use Albadmin\Model\Banner;
+use Albadmin\Model\Boutique;
+use Boutique\Form\ProduitForm;
+use Boutique\Model\Category;
+
+use ZfcUser\Form\ChangePassword;
+
+class UserController extends AbstractController
 {
-    const ROUTE_CHANGEPASSWD = 'zfcuser/changepassword';
-    const ROUTE_LOGIN        = 'zfcuser/login';
+    const ROUTE_CHANGEPASSWD = 'zfcuser/changemypass';
+    const ROUTE_CHANGEINFORMATION = 'zfcuser/changeinformation';
+    const ROUTE_LOGIN        = 'zfcuser/thawourth26';
     const ROUTE_REGISTER     = 'zfcuser/register';
     const ROUTE_CHANGEEMAIL  = 'zfcuser/changeemail';
+
+    const ROUTE_MYADS        = 'zfcuser/myads';
+    const ROUTE_MYCAR        = 'zfcuser/mycar';
+    const ROUTE_MYHOTEL      = 'zfcuser/myhotel';
+    const ROUTE_MYPUB        = 'zfcuser/mypub';
+    const ROUTE_MYBLOG       = 'zfcuser/myblog';
+    const ROUTE_MYSTORE      = 'zfcuser/mystore';
+    const ROUTE_PRODUITS     = 'zfcuser/produits';
 
     const CONTROLLER_NAME    = 'zfcuser';
 
@@ -42,6 +65,11 @@ class UserController extends AbstractActionController
     /**
      * @var Form
      */
+    protected $changeInformationForm;
+
+    /**
+     * @var Form
+     */
     protected $changeEmailForm;
 
     /**
@@ -63,7 +91,334 @@ class UserController extends AbstractActionController
         if (!$this->zfcUserAuthentication()->hasIdentity()) {
             return $this->redirect()->toRoute(static::ROUTE_LOGIN);
         }
-        return new ViewModel();
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $oAnnonce = new Annonce(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $nbAds = $oAnnonce->getCountLimit(1, ["ALB_USERS_ID = $userId"]);
+
+        $aWhere = ["ALB_USERS_ID = $userId", "ACTIVE = 1"];
+        $nbVisits = $oAnnonce->geVisitsCount($aWhere);
+        $nbResponses = $oAnnonce->geResponsesCount($aWhere);
+        $ratingsInfo = $oAnnonce->getRatingsInfo($aWhere);
+
+        $oComment = new Comment(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $nbComments = $oComment->getCountLimit(["ALN_ANNONCES.ALB_USERS_ID = $userId"]);
+
+        /*
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);*/
+
+
+        return new ViewModel(
+            array(
+                // 'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm(),
+                'nbAds' => $nbAds,
+                'nbVisits' => $nbVisits,
+                'nbResponses' => $nbResponses,
+                'ratingsInfo' => $ratingsInfo,
+                'nbComments' => $nbComments
+            )
+        );
+    }
+
+    public function myadsAction()
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+        }
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+        $oAnnonce = new Annonce(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aAnnonces = $oAnnonce->listLimitActif(["ALB_USERS_ID = $userId"], 'a.CREATE_DATE DESC');
+
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);
+
+
+        return new ViewModel(
+            array(
+                'menus'     => $aMenu,
+                'annonces'  => $aAnnonces,
+                'nbAds'     => count($aAnnonces),
+                'loginForm' => $this->getLoginForm()
+            )
+        );
+    }
+
+    public function mypubAction()
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+        }
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);
+
+        $aPub = $this->getModel('banner','Albadmin');
+        //$nbrPub = $aPub->getCountPub($userId);
+        $pubs = $aPub->getUserPub($userId,3);
+
+        return new ViewModel(
+            array(
+                'menus'     => $aMenu,
+                'pubs'      => $pubs,
+                'nbPub'     => $aPub->getCountLimit(1, [['ALB_USERS_ID' => $userId]]),
+                'loginForm' =>  $this->getLoginForm()
+            )
+        );
+    }
+
+    public function mycarAction()
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+        }
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);
+
+
+        return new ViewModel(
+            array(
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm()
+            )
+        );
+    }
+
+    public function myhotelAction()
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+        }
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);
+
+
+        return new ViewModel(
+            array(
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm()
+            )
+        );
+    }
+
+    public function myblogAction()
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+        }
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);
+
+
+        return new ViewModel(
+            array(
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm()
+            )
+        );
+    }
+
+    public function mystoreAction()
+    {
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+        }
+
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $oMenu =  $this->getModel('menu','Albadmin');
+        $aMenu = $oMenu->getMenus($userId);
+
+        $oStore =  $this->getModel('boutique','Albadmin');
+        $stores = $oStore->loadByUser($userId);
+
+        return new ViewModel(
+            array(
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm(),
+                'stores' => $stores,
+            )
+        );
+    }
+
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
+    public function changemypassAction()
+    {
+        // if the user isn't logged in, we can't change password
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            // redirect to the login redirect route
+            return $this->redirect()->toRoute($this->getOptions()->getLoginRedirectRoute());
+        }
+        $userId = $this->zfcUserAuthentication()->getIdentity()->getId();
+
+        $oMenu = new Menu(
+            $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'),
+            $this->getServiceLocator()
+        );
+        $aMenu = $oMenu->getMenus($userId);
+
+
+        $form = $this->getChangePasswordForm();
+        $prg = $this->prg(static::ROUTE_CHANGEPASSWD);
+
+        $fm = $this->flashMessenger()->setNamespace('changemypass')->getMessages();
+        if (isset($fm[0])) {
+            $status = $fm[0];
+        } else {
+            $status = null;
+        }
+
+        if ($prg instanceof Response) {
+            return $prg;
+        } elseif ($prg === false) {
+            return array(
+                'status' => $status,
+                'changePasswordForm' => $form,
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm(),
+            );
+        }
+
+        $form->setData($prg);
+
+        if (!$form->isValid()) {
+            return array(
+                'status' => false,
+                'changePasswordForm' => $form,
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm(),
+            );
+        }
+
+        if (!$this->getUserService()->changePassword($form->getData())) {
+            return array(
+                'status' => false,
+                'changePasswordForm' => $form,
+                'menus' => $aMenu,
+                'loginForm'    =>  $this->getLoginForm(),
+            );
+        }
+
+        $this->flashMessenger()->setNamespace('changemypass')->addMessage(true);
+        return $this->redirect()->toRoute(static::ROUTE_CHANGEPASSWD);
+
+    }
+
+
+    /**
+     * @return array|mixed|\Zend\Http\Response
+     */
+    public function loginJsonAction()
+    {
+
+        if ($this->zfcUserAuthentication()->hasIdentity()) {
+            return new JsonModel(array('ok' => 'ok'));
+        }
+
+        $request = $this->getRequest();
+        $form    = $this->getLoginForm();
+
+        if (!$request->isPost()) {
+            return new JsonModel(
+                array(
+                    'errors' => 'ok',
+                    'alert' => '/!\ Erreur lors de l\'envoi du formulaire !'
+                )
+            );
+        }
+
+        $postData = $request->getPost();
+        $form->setData($postData);
+        if (!$form->isValid()) {
+            return new JsonModel(
+                array(
+                    'errors' => $form->getMessages()
+                )
+            );
+        }
+
+        // clear adapters
+        $this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
+        $this->zfcUserAuthentication()->getAuthService()->clearIdentity();
+
+        $adapter = $this->zfcUserAuthentication()->getAuthAdapter();
+        $redirect = $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect', false));
+
+        $result = $adapter->prepareForAuthentication($this->getRequest());
+
+        // Return early if an adapter returned a response
+        if ($result instanceof Response) {
+            return $result;
+        }
+
+        $auth = $this->zfcUserAuthentication()->getAuthService()->authenticate($adapter);
+        if (!$auth->isValid()) {
+            $adapter->resetAdapters();
+            return new JsonModel(
+                array(
+                    'errors' => 'ok',
+                    'alert' => $this->failedLoginMessage
+                )
+            );
+        }
+
+        if ($this->getOptions()->getUseRedirectParameterIfPresent() && $redirect) {
+            return new JsonModel(array('url' => $redirect));
+        }
+
+        $route = $this->getOptions()->getRedirectRoute(
+            $this->zfcUserAuthentication()->getIdentity()->getAlbProfilesId()
+        );
+
+        if (is_callable($route)) {
+            $route = $route($this->zfcUserAuthentication()->getIdentity());
+        }
+
+        return new JsonModel(array('route' => $route));
     }
 
     /**
@@ -111,8 +466,11 @@ class UserController extends AbstractActionController
      */
     public function logoutAction()
     {
-        $this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
+
+    	$this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
+
         $this->zfcUserAuthentication()->getAuthAdapter()->logoutAdapters();
+
         $this->zfcUserAuthentication()->getAuthService()->clearIdentity();
 
         $redirect = $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect', false));
@@ -121,7 +479,9 @@ class UserController extends AbstractActionController
             return $this->redirect()->toUrl($redirect);
         }
 
-        return $this->redirect()->toRoute($this->getOptions()->getLogoutRedirectRoute());
+        //$redirectionRoute = $this->getOptions()->getLogoutRedirectRoute();
+        $redirectionRoute = "albook";
+        return $this->redirect()->toRoute($redirectionRoute);
     }
 
     /**
@@ -158,12 +518,13 @@ class UserController extends AbstractActionController
             return $this->redirect()->toUrl($redirect);
         }
 
-        $route = $this->getOptions()->getLoginRedirectRoute();
+        $route = $this->getOptions()->getRedirectRoute(
+            $this->zfcUserAuthentication()->getIdentity()->getAlbProfilesId()
+        );
 
         if (is_callable($route)) {
             $route = $route($this->zfcUserAuthentication()->getIdentity());
         }
-
         return $this->redirect()->toRoute($route);
     }
 
@@ -183,8 +544,9 @@ class UserController extends AbstractActionController
         }
 
         $request = $this->getRequest();
-        $service = $this->getUserService();
         $form = $this->getRegisterForm();
+
+        $service = $this->getUserService();
 
         if ($this->getOptions()->getUseRedirectParameterIfPresent() && $request->getQuery()->get('redirect')) {
             $redirect = $request->getQuery()->get('redirect');
@@ -285,6 +647,61 @@ class UserController extends AbstractActionController
         return $this->redirect()->toRoute(static::ROUTE_CHANGEPASSWD);
     }
 
+    /**
+     * Change the users information
+     */
+    public function changeinformationAction()
+    {
+
+        // if the user isn't logged in, we can't change password
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            // redirect to the login redirect route
+            return $this->redirect()->toRoute($this->getOptions()->getLoginRedirectRoute());
+        }
+        
+        $form = $this->getChangeInformationForm();
+
+        $prg = $this->prg(static::ROUTE_CHANGEINFORMATION);
+
+        $fm = $this->flashMessenger()->setNamespace('change-information')->getMessages();
+        if (isset($fm[0])) {
+            $status = $fm[0];
+        } else {
+            $status = null;
+        }
+
+        if ($prg instanceof Response) {
+            return $prg;
+        } elseif ($prg === false) {
+            return array(
+                'status' => $status,
+                'changeInformationForm' => $form,
+            );
+        }die('toto');
+
+        $form->setData($prg);
+
+        if (!$form->isValid()) {
+            return array(
+                'status' => false,
+                'changeInformationForm' => $form,
+            );
+        }
+        //var_dump($form);
+        //die();
+        if (!$this->getUserService()->changeInformation($form->getData())) {
+            return array(
+                'status' => false,
+                'changeInformationForm' => $form,
+            );
+        }
+
+        $this->flashMessenger()->setNamespace('change-information')->addMessage(true);
+        return $this->redirect()->toRoute(static::ROUTE_CHANGEINFORMATION);
+    }
+    /**
+    * change users email
+    */
     public function changeEmailAction()
     {
         // if the user isn't logged in, we can't change email
@@ -402,6 +819,19 @@ class UserController extends AbstractActionController
         return $this;
     }
 
+    public function getChangeInformationForm()
+    {
+        if (!$this->changeInformationForm) {
+            $this->setChangeInformationForm($this->getServiceLocator()->get('zfcuser_change_information_form'));
+        }
+        return $this->changeInformationForm;
+    }
+
+    public function setChangeInformationForm(Form $changeInformationForm)
+    {
+        $this->changeInformationForm = $changeInformationForm;
+        return $this;
+    }
     /**
      * set options
      *

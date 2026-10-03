@@ -1,0 +1,672 @@
+<style>
+    .zfc-user-top-banner {
+        border: 1px solid #eee;
+        padding: 20px;
+        border-radius: 20px;
+        margin-top: 20px;
+        box-shadow: rgba(0,0,0,.15) 2px 2px 8px 0px;
+    }
+    .zfc-user-page {
+        margin: 30px 0 50px 0;
+    }
+    .zfc-user-page .container .title {
+        margin-bottom: 30px;
+    }
+    .zfc-user-page .main-container {
+        padding-left: 30px;
+    }
+    .my-ads-container .dropdown-menu li {
+        text-align: left;
+    }
+    .my-ads-container .dropdown-menu li a {
+        padding: 10px;
+        display: flex;
+        column-gap: 10px;
+        align-items: center;
+    }
+
+    .menu-container {
+        display: flex;
+        align-items: center;
+        height: 80px;
+    }
+    .menu-container ul {
+        padding: 0;
+        list-style: none;
+        display: flex;
+        column-gap: 15px;
+        margin: auto;
+    }
+
+    .menu-container li {
+        border: 1px solid #d3cdf8;
+        border-radius: 20px;
+        background: #f5f4fe;
+    }
+
+    .menu-container li.active a {
+        color: #cd46a7;
+    }
+
+    .menu-container a.main-link {
+        display: flex;
+        column-gap: 10px;
+        align-items: center;
+        padding: 10px 15px;
+    }
+    .menu-container .icon i.fa {
+        font-size: 1.2em;
+    }
+    .post-container .actions-menu {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        z-index: 2;
+        transition: all .25s ease;
+        font-size: 22px;
+    }
+
+    .post-container .actions-menu i {
+        margin-top: 8px;
+        font-size: 24px;
+    }
+
+    .post-container .post .aln-box-category {
+        margin: 10px 0 5px 0;
+        overflow: visible;
+    }
+
+    .creation-date {
+        position: absolute;
+        bottom: 14px;
+        left: 14px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 5px;
+        color: #fff;
+        z-index: 2;
+        font-size: 11px;
+        transition: all .25s ease;
+        font-weight:
+    }
+
+    .rating-price {
+        margin-top: 0;
+    }
+
+    .post-media .actions-menu .dropdown-menu {
+        left:-130px;
+        width:70px;
+        border-radius: 12px;
+        z-index: 1000;
+    }
+
+    .small-box {
+        position:relative;
+        display:block;
+        margin-bottom:20px;
+        border-radius: 20px;
+    }
+    .small-box>.inner {
+        padding:20px
+    }
+    .small-box>.small-box-footer {
+        position:relative;
+        text-align:center;
+        padding:5px 0;
+        color:#fff;
+        color:rgba(255,255,255,.8);
+        display:block;
+        z-index:10;
+        background:rgba(0,0,0,.1);
+        text-decoration:none;
+        border-radius: 0 0 20px 20px;
+    }
+    .small-box>.small-box-footer:hover {
+        color:#fff;
+        background:rgba(0,0,0,.15)
+    }
+    .small-box h3 {
+        font-size:38px;
+        font-weight:700;
+        margin:0 0 10px;
+        white-space:nowrap;
+        padding:0
+    }
+    .small-box p {
+        font-size:15px
+    }
+    .small-box p>small {
+        display:block;
+        color:#f9f9f9;
+        font-size:13px;
+        margin-top:5px
+    }
+    .small-box h3,
+    .small-box p {
+        z-index:5px
+    }
+    .small-box .icon {
+        -webkit-transition:all .3s linear;
+        -o-transition:all .3s linear;
+        transition:all .3s linear;
+        position:absolute;
+        top:-10px;
+        right:10px;
+        z-index:0;
+        font-size:90px;
+        color:rgba(0,0,0,.15)
+    }
+    .small-box:hover {
+        text-decoration:none;
+        color:#f9f9f9
+    }
+    .small-box:hover .icon {
+        font-size:95px
+    }
+    @media (max-width:767px) {
+        .small-box {
+            text-align:center
+        }
+        .small-box .icon {
+            display:none
+        }
+        .small-box p {
+            font-size:12px
+        }
+        .menu-container {
+            padding-top: 30px;
+        }
+        .menu-container a.main-link {
+            width: 90px;
+            display: flex;
+            align-items: center;
+        }
+        .menu-container a.main-link .icon {
+            margin: auto;
+        }
+        .zfc-user-page {
+            margin: 5px;
+        }
+        .zfc-user-top-banner {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    }
+    .box {
+        position:relative;
+        border-radius:3px;
+        background:#fff;
+        border-top:3px solid #d2d6de;
+        margin-bottom:20px;
+        width:100%
+    }
+    .box.box-primary {
+        border-top-color:#3c8dbc
+    }
+    .box.box-info {
+        border-top-color:#00c0ef
+    }
+    .box.box-danger {
+        border-top-color:#dd4b39
+    }
+    .box.box-warning {
+        border-top-color:#f39c12
+    }
+    .box.box-success {
+        border-top-color:#00a65a
+    }
+    .box.box-default {
+        border-top-color:#d2d6de
+    }
+    .box.collapsed-box .box-body,
+    .box.collapsed-box .box-footer {
+        display:none
+    }
+    .box .nav-stacked>li {
+        border-bottom:1px solid #f4f4f4;
+        margin:0
+    }
+    .box .nav-stacked>li:last-of-type {
+        border-bottom:none
+    }
+    .box.height-control .box-body {
+        max-height:300px;
+        overflow:auto
+    }
+    .box .border-right {
+        border-right:1px solid #f4f4f4
+    }
+    .box .border-left {
+        border-left:1px solid #f4f4f4
+    }
+    .box.box-solid {
+        border-top:0
+    }
+    .box.box-solid>.box-header .btn.btn-default {
+        background:0 0
+    }
+    .box.box-solid>.box-header .btn:hover,
+    .box.box-solid>.box-header a:hover {
+        background:rgba(0,0,0,.1)!important
+    }
+    .box.box-solid.box-default {
+        border:1px solid #d2d6de
+    }
+    .box.box-solid.box-default>.box-header {
+        color:#444;
+        background:#d2d6de
+    }
+    .box.box-solid.box-default>.box-header .btn,
+    .box.box-solid.box-default>.box-header a {
+        color:#444
+    }
+    .box.box-solid.box-primary {
+        border:1px solid #3c8dbc
+    }
+    .box.box-solid.box-primary>.box-header {
+        color:#fff;
+        background:#3c8dbc
+    }
+    .box.box-solid.box-primary>.box-header .btn,
+    .box.box-solid.box-primary>.box-header a {
+        color:#fff
+    }
+    .box.box-solid.box-info {
+        border:1px solid #00c0ef
+    }
+    .box.box-solid.box-info>.box-header {
+        color:#fff;
+        background:#00c0ef
+    }
+    .box.box-solid.box-info>.box-header .btn,
+    .box.box-solid.box-info>.box-header a {
+        color:#fff
+    }
+    .box.box-solid.box-danger {
+        border:1px solid #dd4b39
+    }
+    .box.box-solid.box-danger>.box-header {
+        color:#fff;
+        background:#dd4b39
+    }
+    .box.box-solid.box-danger>.box-header .btn,
+    .box.box-solid.box-danger>.box-header a {
+        color:#fff
+    }
+    .box.box-solid.box-warning {
+        border:1px solid #f39c12
+    }
+    .box.box-solid.box-warning>.box-header {
+        color:#fff;
+        background:#f39c12
+    }
+    .box.box-solid.box-warning>.box-header .btn,
+    .box.box-solid.box-warning>.box-header a {
+        color:#fff
+    }
+    .box.box-solid.box-success {
+        border:1px solid #00a65a
+    }
+    .box.box-solid.box-success>.box-header {
+        color:#fff;
+        background:#00a65a
+    }
+    .box.box-solid.box-success>.box-header .btn,
+    .box.box-solid.box-success>.box-header a {
+        color:#fff
+    }
+    .box.box-solid>.box-header>.box-tools .btn {
+        border:0;
+        box-shadow:none
+    }
+    .box.box-solid[class*=bg]>.box-header {
+        color:#fff
+    }
+    .box .box-group>.box {
+        margin-bottom:5px
+    }
+    .box .knob-label {
+        text-align:center;
+        color:#333;
+        font-weight:100;
+        font-size:12px;
+        margin-bottom:.3em
+    }
+    .box>.loading-img,
+    .box>.overlay,
+    .overlay-wrapper>.loading-img,
+    .overlay-wrapper>.overlay {
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%
+    }
+    .box .overlay,
+    .overlay-wrapper .overlay {
+        z-index:50;
+        background:rgba(255,255,255,.7);
+        border-radius:3px
+    }
+    .box .overlay>.fa,
+    .overlay-wrapper .overlay>.fa {
+        position:absolute;
+        top:50%;
+        left:50%;
+        margin-left:-15px;
+        margin-top:-15px;
+        color:#000;
+        font-size:30px
+    }
+    .box .overlay.dark,
+    .overlay-wrapper .overlay.dark {
+        background:rgba(0,0,0,.5)
+    }
+    .box-body:after,
+    .box-body:before,
+    .box-footer:after,
+    .box-footer:before,
+    .box-header:after,
+    .box-header:before {
+        content:" ";
+        display:table
+    }
+    .box-body:after,
+    .box-footer:after,
+    .box-header:after {
+        clear:both
+    }
+    .box-header {
+        color:#444;
+        display:block;
+        padding:10px;
+        position:relative
+    }
+    .box-header.with-border {
+        border-bottom:1px solid #f4f4f4
+    }
+    .collapsed-box .box-header.with-border {
+        border-bottom:none
+    }
+    .box-header .box-title,
+    .box-header>.fa,
+    .box-header>.glyphicon,
+    .box-header>.ion {
+        display:inline-block;
+        font-size:18px;
+        margin:0;
+        line-height:1
+    }
+    .box-header>.fa,
+    .box-header>.glyphicon,
+    .box-header>.ion {
+        margin-right:5px
+    }
+    .box-header>.box-tools {
+        position:absolute;
+        right:10px;
+        top:5px
+    }
+    .box-header>.box-tools [data-toggle=tooltip],
+    .timeline {
+        position:relative
+    }
+    .box-header>.box-tools.pull-right .dropdown-menu {
+        right:0;
+        left:auto
+    }
+    .btn-box-tool {
+        padding:5px;
+        font-size:12px;
+        background:0 0;
+        box-shadow:none!important;
+        color:#97a0b3
+    }
+    .btn-box-tool:hover,
+    .open .btn-box-tool {
+        color:#606c84
+    }
+    .btn-box-tool:active {
+        outline:0!important
+    }
+    .box-body {
+        padding:10px;
+        border-radius:0 0 3px 3px
+    }
+    .no-header .box-body {
+        border-top-right-radius:3px;
+        border-top-left-radius:3px
+    }
+    .box-body>.table {
+        margin-bottom:0
+    }
+    .box-body .fc {
+        margin-top:5px
+    }
+    .box-body .full-width-chart {
+        margin:-19px
+    }
+    .box-body.no-padding .full-width-chart {
+        margin:-9px
+    }
+    .box-body .box-pane {
+        border-radius:0 0 0 3px
+    }
+    .box-body .box-pane-right {
+        border-radius:0 0 3px
+    }
+    .box-footer {
+        border-top:1px solid #f4f4f4;
+        padding:10px;
+        background-color:#fff;
+        border-radius:0 0 3px 3px
+    }
+    .bg-green {
+        background-color: #50BA9D !important;
+        color: #fff !important;
+    }
+    .bg-yellow{
+        background-color: #f8c411 !important;
+        color: #fff !important;
+    }
+    .bg-aqua {
+        background-color: #00c0ef !important;
+        color: #fff !important;
+    }
+    .bg-red {
+        background-color: #F57160 !important;
+        color: #fff !important;
+    }
+    .bg-orange {
+        background-color: #f39c12 !important;
+        color: #fff !important;
+    }
+    .bg-gray {
+        background-color: #8376D6 !important;
+        color: #fff !important;
+    }
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    .alert-error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+</style>
+<?php
+$this->headLink()->appendStylesheet($this->basePath() . '/js/components/paginator/simplePagination.css');
+// $this->headLink()->appendStylesheet($this->basePath() . '/admin/css/admin.min.css');
+$searchOption = (isset($this->searchOption)) ? $this->searchOption : '';
+$sessionContainer = new Zend\Session\Container('locale');
+$locale = $sessionContainer->offsetGet('mylocale');
+if ($locale == 'ar') {
+    $direction = 'left';
+    $pull = "right";
+
+} else {
+    $direction = 'right';
+    $pull = "left";
+}
+?>
+<div class="loader">
+    <div class="loader-overlay">
+        <div class="loader-box">
+            <div class="dots-loader">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="navbar-top">
+    <nav class="navbar navbar-default navbar-static" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand nav-external nav-logo" href="#"
+                   onclick="return fctRedirect('<?php echo $this->url('albook') ?>');">
+                    <div style="padding-left: 15px;">
+                        <img alt="el3ers" src="/img/logo-white.png" class="white-logo">
+                    </div>
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="<?php echo $this->url('albook') ?>"><?php echo $this->translate("Accueil", __NAMESPACE__); ?></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo $this->url('annonces'); ?>"><?php echo $this->translate("Ads", __NAMESPACE__); ?></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo $this->url('publier-une-annonce'); ?>">
+                            <?php echo $this->translate("Publier", __NAMESPACE__); ?>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-<?php echo $direction; ?>">
+                    <li class="dropdown user user-menu active hidden-xs">
+                        <?php echo $this->partial('albook/useracount', ['loginForm' => $this->loginForm]); ?>
+                    </li>
+                    <li class="dropdown hidden">
+                        <a title="<?php echo $this->translate('Language', __NAMESPACE__) ?>" data-toggle="dropdown"
+                           class="dropdown-toggle" href="#" aria-expanded="false" style="font-size: 14px;">
+                            <i class="fa fa-flag-checkered"></i>&nbsp;<?php echo $this->translate('Language', __NAMESPACE__) ?>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" onclick="changeLocale('fr');"><i class="fa fa-fw fa-flag"></i> Français</a>
+                            </li>
+                            <li>
+                                <a style="color: #cccccc;" href="#" onclick="/*changeLocale('ar');*/"><i
+                                            class="fa fa-fw fa-flag"></i> العربية</a>
+                            </li>
+                            <li>
+                                <a style="color: #cccccc;" href="#" onclick="/*changeLocale('en');*/"><i
+                                            class="fa fa-fw fa-flag"></i> English</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="<?php echo $this->url('blog') ?>">
+                            <i class="fa fa-rss"></i> <?php echo $this->translate("Blog", __NAMESPACE__); ?>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<section class="white-section">
+    <div class="container zfc-user-top-banner">
+        <div class="row">
+            <div class="col-md-4 col-sm-12 col-xs-12" style="height: 80px;">
+                <div style="float:left; padding-right:16px;">
+                    <?php
+                    $albAvatar = $this->zfcUserIdentity()->getAvatar();
+                    if (!empty($albAvatar)) {
+                        $src = DS . 'images' . DS . 'avatars' . DS . $albAvatar;
+                        echo '<img src="' . $src . '" style="width: 80px; height: 80px;" class="img-circle img-thumbnail">';
+                    } else {
+                        $settings = array(
+                            'class' => 'img-thumbnail',
+                            'img_size' => 80,
+                            'default_img' => \Zend\View\Helper\Gravatar::DEFAULT_MM,
+                            'rating' => \Zend\View\Helper\Gravatar::RATING_G,
+                            'secure' => null,
+                        );
+                        $attr = array(
+                            'class' => 'img-circle'
+                        );
+                        echo $this->gravatar($this->zfcUserIdentity()->getEmail(), $settings, $attr);
+                    }
+                    ?>
+                </div>
+
+                <h4 style="margin-top: 0;margin-bottom: 5px;"><?php echo $this->translate('Hello', __NAMESPACE__); ?>,<br>
+                    <?php echo $this->zfcUserIdentity()->getFirstname() . ' ' . $this->zfcUserIdentity()->getLastname(); ?></h4>
+                <small style="color: #6B7280; font-size: 12px;">
+                    <div><i class="fa fa-envelope-o"></i> &nbsp;<?php echo $this->zfcUserIdentity()->getEmail(); ?></div>
+                    <div><span class="glyphicon glyphicon-phone"></span>
+                        &nbsp;<?php echo $this->zfcUserIdentity()->getPhoneMobile(); ?></div>
+                </small>
+            </div>
+            <div class="col-md-8 col-sm-12 menu-container">
+                <ul>
+                    <li class="<?php echo $this->subPage === 'myDashboard' ? 'active' : '' ?>">
+                        <a class="main-link txt" href="javascript:fctRedirect('<?php echo $this->url('zfcuser'); ?>')">
+                            <span class="icon">
+                                <i class="fa fa-pie-chart"></i>
+                            </span>
+                            <span class="hidden-xs">Tableau de bord</span>
+                        </a>
+
+                    </li>
+                    <li class="<?php echo $this->subPage === 'myAds' ? 'active' : '' ?>">
+                        <a class="main-link txt" href="javascript:fctRedirect('<?php echo $this->url('zfcuser/myads'); ?>')">
+                            <span class="icon">
+                                <i class="fa fa-clipboard"></i>
+                            </span>
+                            <span class="hidden-xs">Mes annonces</span>
+                        </a>
+                    </li>
+                    <li class="<?php echo $this->subPage === 'myInformation' ? 'active' : '' ?>">
+                        <a class="main-link txt" href="javascript:fctRedirect('<?php echo $this->url('zfcuser/changeinformation'); ?>')">
+                            <span class="icon">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span class="hidden-xs">Mes informations</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

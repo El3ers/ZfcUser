@@ -1,0 +1,39 @@
+<?php echo $this->doctype(); ?>
+<html>
+<head>
+    <?php //echo $this->headTitle( $this->translate('el3ers'))->setSeparator(' - ')->setAutoEscape(false)
+    $ogmetas = isset($this->ogmetas)?$this->ogmetas:null;
+    echo $this->metaGenerique('Fêtes et événements en Algérie', $ogmetas);
+    echo $this->headLink(['rel' => 'icon', 'type' => 'image/png', 'href' => 'https://www.el3ers.com/favicon.png']);
+
+    $sessionContainer = new Zend\Session\Container('locale');
+    $locale = $sessionContainer->offsetGet('mylocale');
+
+    /*if($locale == 'ar'){
+        echo $this->headLink() ->appendStylesheet($this->basePath() . '/css/bootstrap-rtl.min.css')
+                               ->appendStylesheet($this->basePath() . '/css/common/style-rtl.min.css');
+    }*/
+    echo $this->headScript();
+    ?>
+</head>
+<body>
+<div class="-container">
+    <div class="loader">
+        <div class="loader-overlay">
+            <div class="loader-box">
+                <div class="dots-loader">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    echo $this->content;
+    ?>
+</div> <!-- /container -->
+
+<?php echo $this->inlineScript(); ?>
+</body>
+</html>

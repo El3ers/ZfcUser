@@ -7,6 +7,7 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 use ZfcUser\Mapper\UserInterface as UserMapper;
+use Zend\Session\Container as SessionContainer;
 
 class Db implements Storage\StorageInterface, ServiceManagerAwareInterface
 {
@@ -61,18 +62,24 @@ class Db implements Storage\StorageInterface, ServiceManagerAwareInterface
      */
     public function read()
     {
+
         if (null !== $this->resolvedIdentity) {
             return $this->resolvedIdentity;
+        }
+        $session = new SessionContainer('Albook_Auth');
+        if ($session->offsetExists('identity')) {
+            return $session->offsetGet('identity');
         }
 
         $identity = $this->getStorage()->read();
 
         if (is_int($identity) || is_scalar($identity)) {
-            $identity = $this->getMapper()->findById($identity);
+            $identity = $this->getMapper()->findById($identity, true);
         }
 
         if ($identity) {
             $this->resolvedIdentity = $identity;
+            $session->offsetSet('identity', $identity);
         } else {
             $this->resolvedIdentity = null;
         }

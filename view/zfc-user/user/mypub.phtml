@@ -1,0 +1,309 @@
+<?php
+$this->headLink()->appendStylesheet($this->basePath() . '/js/components/paginator/simplePagination.css');
+$searchOption = (isset($this->searchOption)) ? $this->searchOption : '';
+$sessionContainer = new Zend\Session\Container('locale');
+$locale = $sessionContainer->offsetGet('mylocale');
+if ($locale == 'ar') {
+    $direction = 'left';
+    $pull = "right";
+
+} else {
+    $direction = 'right';
+    $pull = "left";
+}
+?>
+    <div class="loader">
+        <div class="loader-overlay">
+            <div class="loader-box">
+                <div class="dots-loader">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="navbar-top">
+        <nav class="navbar navbar-default navbar-static" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a class="navbar-brand nav-external nav-logo" href="#"
+                       onclick="return fctRedirect('<?php echo $this->url('albook') ?>');">
+                        <div style="padding-left: 15px;">
+                            <img alt="el3ers" src="/img/logo-white.png" class="white-logo">
+                        </div>
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="<?php echo $this->url('albook') ?>"><?php echo $this->translate("Accueil", __NAMESPACE__); ?></a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('annonces'); ?>"><?php echo $this->translate("Ads", __NAMESPACE__); ?></a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('publier-une-annonce'); ?>">
+                                <?php echo $this->translate("Publier", __NAMESPACE__); ?>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-<?php echo $direction; ?>">
+                        <li class="dropdown user user-menu active">
+                            <?php echo $this->partial('albook/useracount', ['loginForm' => $this->loginForm]); ?>
+                        </li>
+                        <li class="dropdown">
+                            <a title="<?php echo $this->translate('Language', __NAMESPACE__) ?>" data-toggle="dropdown"
+                               class="dropdown-toggle" href="#" aria-expanded="false" style="font-size: 12px;">
+                                <i class="fa fa-flag-checkered"></i>&nbsp;<?php echo $this->translate('Language', __NAMESPACE__) ?>
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#" onclick="changeLocale('fr');"><i class="fa fa-fw fa-flag"></i> Français</a>
+                                </li>
+                                <li>
+                                    <a style="color: #cccccc;" href="#" onclick="/*changeLocale('ar');*/"><i
+                                            class="fa fa-fw fa-flag"></i> العربية</a>
+                                </li>
+                                <li>
+                                    <a style="color: #cccccc;" href="#" onclick="/*changeLocale('en');*/"><i
+                                            class="fa fa-fw fa-flag"></i> English</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('blog') ?>">
+                                <i class="fa fa-rss"></i> <?php echo $this->translate("Blog", __NAMESPACE__); ?>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <section class="default-section section-bordred" style="padding-top:10px; padding-bottom:10px;">
+        <div class="container">
+            <div class="row green-txt">
+                <div class="col-md-5 col-sm-6" style="height: 100px;">
+
+                    <div style="float:left; padding-right:16px;">
+                        <?php
+                        $albAvatar = $this->zfcUserIdentity()->getAvatar();
+                        if (!empty($albAvatar)) {
+                            $src = DS . 'images' . DS . 'avatars' . DS . $albAvatar;
+                            echo '<img src="' . $src . '" style="width: 100px; height: 100px;" class="img-circle img-thumbnail">';
+                        } else {
+                            $settings = array(
+                                'class' => 'img-thumbnail',
+                                'img_size' => 100,
+                                'default_img' => \Zend\View\Helper\Gravatar::DEFAULT_MM,
+                                'rating' => \Zend\View\Helper\Gravatar::RATING_G,
+                                'secure' => null,
+                            );
+                            $attr = array(
+                                'class' => 'img-circle'
+                            );
+                            echo $this->gravatar($this->zfcUserIdentity()->getEmail(), $settings, $attr);
+                        }
+                        ?>
+                    </div>
+
+                    <h3><?php echo $this->translate('Hello', __NAMESPACE__); ?>
+                        , <?php echo $this->zfcUserIdentity()->getLastname() . ' ' . $this->zfcUserIdentity()->getFirstname(); ?></h3>
+                    <a class="orange-txt"
+                       href="<?php echo $this->url('zfcuser/logout') ?>">[<?php echo $this->translate('Sign out', __NAMESPACE__); ?>
+                        ]</a>
+                </div>
+                <div class="col-md-4 col-sm-6" style="padding-top:20px;">
+                    <div><i class="fa fa-envelope-o"></i> &nbsp;<?php echo $this->zfcUserIdentity()->getEmail(); ?></div>
+                    <div><span class="glyphicon glyphicon-phone"></span>
+                        &nbsp;<?php echo $this->zfcUserIdentity()->getPhoneMobile(); ?></div>
+                </div>
+                <div class="col-md-3 col-sm-12" style="text-align:right; padding-top:20px;">
+                    <a href="<?php //echo $this->url('zfcuser/changeinformation');?>#"
+                       class="btn btn-green"><?php echo $this->translate('Change my information', __NAMESPACE__); ?></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="white-section section-bordred" style="padding-bottom: 50px;">
+        <div class="container">
+            <div class="row" style="margin-top:50px;">
+                <!-- Menu -->
+                <div class="col-md-3">
+                    <?php
+                    $html = '<div class="sidebare"><ul class="list-group alb-menu" >';
+                    $html.= '<li class="list-group-item" onclick="fctRedirect(\''.$this->url('zfcuser').'\')">
+                            <i class="fa fa-home fa-2x" data-toggle="tooltip" data-placement="top" title="'.$this->translate('Home', __NAMESPACE__).'"></i> '
+                        .$this->translate('Accueil', __NAMESPACE__). '
+                         </li>';
+                    foreach($menus as $menu){
+                        switch ($menu['LABEL']){
+                            case 'ADS':
+                                $html .='<li class="list-group-item" id="'.$menu['ID'].'" onclick="fctRedirect(\''.$this->url('zfcuser/myads').'\')">';
+                                $html .= '<i class="fa fa-bullhorn fa-2x"></i> '.$this->translate('My ads', __NAMESPACE__);
+                                break;
+                            case 'CAR' :
+                                $html .='<li class="list-group-item" id="'.$menu['ID'].'" onclick="fctRedirect(\''.$this->url('zfcuser/mycar').'\')">';
+                                $html .= '<i class="fa fa-car fa-2x"></i> '.$this->translate('My car rentals', __NAMESPACE__);
+                                break;
+                            case 'HOTEL' :
+                                $html .= '<li class="list-group-item" id="'.$menu['ID'].'" onclick="fctRedirect(\''.$this->url('zfcuser/myhotel').'\')">';
+                                $html .= '<i class="fa fa-bed fa-2x"></i> '.$this->translate('My favorite hotels', __NAMESPACE__);
+                                break;
+                            case 'PUB' :
+                                $html .= '<li class="list-group-item active" id="'.$menu['ID'].'" onclick="fctRedirect(\''.$this->url('zfcuser/mypub').'\')">';
+                                $html .= '<i class="fa fa-object-group fa-2x"></i> '.$this->translate('My advertisement', __NAMESPACE__);
+                                break;
+                            case 'BLOG' :
+                                $html .= '<li class="list-group-item" id="'.$menu['ID'].'" onclick="fctRedirect(\''.$this->url('zfcuser/myblog').'\')">';
+                                $html .= '<i class="fa fa-globe fa-2x"></i> '.$this->translate('My posts', __NAMESPACE__);
+                                break;
+                            case 'STORE' :
+                                $html .= '<li class="list-group-item" id="'.$menu['ID'].'" onclick="fctRedirect(\''.$this->url('zfcuser/mystore').'\')">';
+                                $html .= '<i class="fa fa-shopping-cart fa-2x"></i> '.$this->translate('My store', __NAMESPACE__);
+                                break;
+                        }
+                        $html .='</li>';
+                    }
+                    $html.= '<li class="list-group-item" onclick="fctRedirect(\''.$this->url('zfcuser/changemypass').'\')">
+                            <i class="fa fa-unlock fa-2x" data-toggle="tooltip" data-placement="top" title="'.$this->translate('Mise à jour mot de passe', __NAMESPACE__).'"></i> '
+                        .$this->translate('Mise à jour mot de passe', __NAMESPACE__). '
+                         </li>';
+                    $html .= '</ul></div>';
+                    echo $html;
+                    ?>
+                </div>
+                <!-- fin menu -->
+                <div class="col-md-6">
+                    <div class="panel panel-primary" style="border-color: #F5F4FE;">
+                        <div class="panel-heading" style="background-color: #f5f5f5;background-image: none; border-color: #F5F4FE; color: #4f5963;">
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <i class="fa fa-object-group fa-2x alb-heading-circle-tile" style="padding: 15px 0 0 14px;"></i>
+                                </div>
+                                <div class="col-xs-10">
+                                    <p style="font-size: 24px; font-weight: bold;"><?php echo $this->translate('My advertisement', __NAMESPACE__); ?> (<?php echo count($pubs)  ?>)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding:10px;" class="annonce-block">
+                            <?php if ($nbPub == 0): ?>
+                                <?php echo $this->translate('no advertisement', __NAMESPACE__); ?>
+                                <?php
+                            else :
+                                $i = 0;
+                                foreach ($pubs as $k => $pub) :
+                                    $i++;
+                                    $encId = \Albook\Library\Enigma::encrypt($pub['ID'], 'aln1d');
+                                    if($pub['URL']){
+                                        $fileSrc = DS . 'images' . DS . 'banners' . DS . $pub['ALN_CATEGORIES_ID'] . DS . $pub['DIM'] . DS . '370x250' . DS . $pub['URL'].'.'.$pub['EXTENSION'];
+
+                                    } else {
+                                        $fileSrc = DS . 'images' . DS . 'annonces' . DS . 'mobile-no-img.png';
+                                    }
+                                    ?>
+                                    <div style="padding:5px; margin-bottom: 10px;"
+                                         class="col-xs-12 property-listing panel panel-default aPage_<?php echo $i ?>"
+                                         onclick="return fctAnnonceDetails('<?php echo $encId; ?>', <?php echo $pub['ALN_CATEGORIES_ID']; ?>);">
+                                        <h4 class="media-heading green-txt"><?php echo ucfirst($pub['TITRE']); ?></h4>
+                                        <div class="media col-xs-3" style="padding-left: 0px;">
+                                            <div class="pull-left img-container">
+                                                <img src="<?php echo $fileSrc; ?>"
+                                                     style="height: 100px; width: 100px;" class="img-responsive">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="clearfix visible-sm"></div>
+                                            <div class="fnt-smaller">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Cmd le</th>
+                                                        <th>Pavé</th>
+                                                        <th>Dim</th>
+                                                        <th>Actif</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td><?php echo \Albook\Library\Date::format($pub['CREATE_DATE']);?></td>
+                                                        <td data-toggle="tooltip" title="<?php echo $pub['PAGE'];?>"><?php echo $pub['PAVE'];?></td>
+                                                        <td><?php echo $pub['SUB_CATEGORY'];?></td>
+                                                        <td><?php echo ($pub['ACTIF'] == 1)?'<i class="fa fa-eye" data-toggle="tooltip" title="'.$this->translate('enable').'"></i>':'<i class="fa fa-eye-slash" data-toggle="tooltip" title="'.$this->translate('disable').'"></i>';?></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="media col-xs-2">
+                                            <div style="float:none;padding: 5px; margin-bottom: 10px;height: 110px;"
+                                                 class="col-xs-12 user-actions property-listing panel panel-default aPage_<?php echo $i ?>">
+                                                <div class="media col-xs-12" style="padding: 0;">
+                                                    <button class="btn btn-green btn-block" title="Visualiser"
+                                                            onclick="return fctAnnonceDetails('<?php echo $encId; ?>', <?php echo $pub['ALN_CATEGORIES_ID']; ?>);">
+                                                        <i class="fa fa-search"></i></button>
+                                                    <button class="btn btn-orange btn-block" title="Modifier"><i
+                                                            class="fa fa-pencil"></i></button>
+                                                    <button class="btn btn-red btn-block" title="Supprimer"
+                                                            onclick="return fctDeleteUserAds('<?php echo $encId; ?>');"><i
+                                                            class="fa fa-remove"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                endforeach;
+                            endif;
+                            ?>
+
+                            <div id="annonces-selector">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <?php echo $this->ViewBanner('publier2',3); ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="default-section" style="padding-bottom: 50px;">
+        <div class="logo-container">
+            <i class="fa fa-bullhorn fa-2x"></i>
+        </div>
+        <div class="container">
+            <?php echo $this->LastAds('/partial/last-ads.phtml', 4); ?>
+        </div>
+    </section>
+    <script src="<?php echo $this->basePath() ?>/js/components/paginator/simplePagination.js"></script>
+    <script src="<?php echo $this->basePath() ?>/js/zfcuser/user.js"></script>
+    <script>
+        var nbItems = <?php echo $nbPub; ?>;
+        var perPage = 3;
+        $(function () {
+            $('.aPage_1').addClass('aPage_active')
+            for (var i = 2; i < nbItems / perPage + 1; i++) {
+                $('.aPage_' + i).hide();
+            }
+            $("#annonces-selector").pagination({
+                items: nbItems,
+                itemsOnPage: perPage,
+                cssStyle: 'light-theme',
+                onPageClick: function (pageNumber) {
+                    $('.aPage_active').hide('slow').removeClass('aPage_active');
+                    $('.aPage_' + pageNumber).show('slow').addClass('aPage_active');
+                }
+            });
+        });
+    </script>
+<?php echo $this->partial('albook/footer-html'); ?>

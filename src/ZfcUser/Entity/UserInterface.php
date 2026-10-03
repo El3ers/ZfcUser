@@ -34,35 +34,6 @@ interface UserInterface
      */
     public function setUsername($username);
 
-    /**
-     * Get email.
-     *
-     * @return string
-     */
-    public function getEmail();
-
-    /**
-     * Set email.
-     *
-     * @param string $email
-     * @return UserInterface
-     */
-    public function setEmail($email);
-
-    /**
-     * Get displayName.
-     *
-     * @return string
-     */
-    public function getDisplayName();
-
-    /**
-     * Set displayName.
-     *
-     * @param string $displayName
-     * @return UserInterface
-     */
-    public function setDisplayName($displayName);
 
     /**
      * Get password.
@@ -78,6 +49,25 @@ interface UserInterface
      * @return UserInterface
      */
     public function setPassword($password);
+    
+    /**
+     * 
+     * Enter description here ...
+     */
+    public function getCreateDate();
+
+    /**
+     * 
+     * Enter description here ...
+     * @param date $date
+     */
+    public function setCreateDate($createdate);
+
+    public function getActivateDate();
+    public function setActivateDate($activatedate);
+
+    public function getDeactivateDate();
+    public function setDeactivateDate($deactivatedate);
 
     /**
      * Get state.
@@ -93,4 +83,15 @@ interface UserInterface
      * @return UserInterface
      */
     public function setState($state);
+
+    public function getAlbProfilesId();
+    public function setAlbProfilesId($profileid);
+
+    public function getAlbIdentitiesId();
+    public function setAlbIdentitiesId($ididentity);
+
+    public function getType();
+    public function setType($type);
+    
+    
 }

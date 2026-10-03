@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: ZfcUser\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-26 13:38+0100\n"
-"PO-Revision-Date: 2013-11-11 01:19+0900\n"
+"PO-Revision-Date: 2015-10-04 16:49+0200\n"
 "Last-Translator: sasezaki <sasezaki@gmail.com>\n"
 "Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
 "Language: ja_JP\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: /var/www/ZfcUser\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: src/ZfcUser/language/msgIds.php:6
@@ -63,13 +63,11 @@ msgstr "次の文章を入力してください"
 msgid "Submit"
 msgstr "送信"
 
-#: src/ZfcUser/language/msgIds.php:18
-#: view/zfc-user/user/login.phtml:1
+#: src/ZfcUser/language/msgIds.php:18 view/zfc-user/user/login.phtml:1
 msgid "Sign In"
 msgstr "ログイン"
 
-#: src/ZfcUser/language/msgIds.php:19
-#: view/zfc-user/user/register.phtml:1
+#: src/ZfcUser/language/msgIds.php:19 view/zfc-user/user/register.phtml:1
 msgid "Register"
 msgstr "登録する"
 
@@ -126,4 +124,3 @@ msgstr "こんにちは"
 #: view/zfc-user/user/index.phtml:3
 msgid "Sign Out"
 msgstr "ログアウト"
-

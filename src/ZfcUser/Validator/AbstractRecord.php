@@ -100,9 +100,9 @@ abstract class AbstractRecord extends AbstractValidator
         $result = false;
 
         switch ($this->getKey()) {
-            case 'email':
+            /*case 'email':
                 $result = $this->getMapper()->findByEmail($value);
-                break;
+                break;*/
 
             case 'username':
                 $result = $this->getMapper()->findByUsername($value);

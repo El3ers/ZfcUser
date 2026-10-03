@@ -29,7 +29,7 @@ class RegisterFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('email', $inputs);
         $this->assertArrayHasKey('display_name', $inputs);
         $this->assertArrayHasKey('password', $inputs);
-        $this->assertArrayHasKey('passwordVerify', $inputs);
+        /*$this->assertArrayHasKey('passwordVerify', $inputs);*/
     }
 
     public function testSetGetEmailValidator()

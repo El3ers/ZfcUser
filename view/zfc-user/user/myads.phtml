@@ -1,0 +1,363 @@
+<?php
+echo $this->partial('ZfcUser/header', ['subPage' => 'myAds']);
+$nbAds =  count($this->annonces);
+?>
+<section class="zfc-user-page">
+    <div class="container">
+        <div class="title bio">
+            <h3>
+                <span class="title-dot"></span>
+                <?php echo $this->translate('My ads', __NAMESPACE__); ?> (<?php echo $this->nbAds; ?>)
+            </h3>
+        </div>
+        <div class="my-ads-container">
+            <?php if ($nbAds == 0): ?>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <?php echo $this->translate('no ads', __NAMESPACE__); ?>
+                    </div>
+                </div>
+                <?php
+            else :
+                $i = 0;
+                foreach ($this->annonces as $k => $annonce) :
+
+
+                    /**
+                     * --------------------------------------------------------------------------
+                     * Données de l'annonce
+                     * --------------------------------------------------------------------------
+                     */
+
+                    $categoryId = (int) ($annonce['ALN_CATEGORIES_ID'] ?? 0);
+                    $typeId     = (int) ($annonce['ALN_TYPES_ID'] ?? 0);
+
+                    $title      = trim($annonce['TITLE'] ?? '');
+                    $type       = trim($annonce['TYPE'] ?? '');
+                    $commune    = trim($annonce['COMMUNE'] ?? '');
+                    $wilaya     = trim($annonce['WILAYA'] ?? '');
+                    $address    = trim($annonce['ADDRESS'] ?? '');
+
+                    $rating     = (float) ($annonce['RATINGS_VALUE'] ?? 0);
+                    $ratingNbr  = (int) ($annonce['RATINGS_NBR'] ?? 0);
+                    $price      = (float) ($annonce['PRIX'] ?? 0);
+                    $currency   = $annonce['DEVISE'] ?? '';
+
+
+                    /**
+                     * --------------------------------------------------------------------------
+                     * Images
+                     * --------------------------------------------------------------------------
+                     */
+
+                    $files = array_filter(
+                        array_map('trim', explode(';', $annonce['FILES'] ?? '')),
+                        static function ($file) {
+                            return $file !== '';
+                        }
+                    );
+
+                    $imgCount = count($files);
+
+                    $imageBaseUrl =
+                        DS . 'images'
+                        . DS . 'annonces'
+                        . DS . $categoryId
+                        . DS . $typeId;
+
+                    $thumbnailBaseUrl = $imageBaseUrl . DS . '370x250';
+
+                    $placeholder = $this->basePath() . '/img/el3ers-annonces-algerie.png';
+
+                    if ($imgCount > 0) {
+
+                        $firstImage = $imageBaseUrl . DS . $files[0];
+                        $firstThumbnail = $thumbnailBaseUrl . DS . $files[0];
+
+                        $imageHtml = sprintf(
+                            '<img class="img-responsive"
+                                  src="%s"
+                                  data-src="%s"
+                                  alt="%s"
+                                  loading="lazy">',
+                            htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'),
+                            htmlspecialchars($firstThumbnail, ENT_QUOTES, 'UTF-8'),
+                            htmlspecialchars($title ?: 'Annonce El3ers', ENT_QUOTES, 'UTF-8')
+                        );
+
+                    } else {
+
+                        $imageHtml = sprintf(
+                            '<img class="img-responsive"
+                                  src="%s"
+                                  alt="Aucune image disponible"
+                                  loading="lazy">',
+                            htmlspecialchars(
+                                $this->basePath() . '/img/no-image.png',
+                                ENT_QUOTES,
+                                'UTF-8'
+                            )
+                        );
+                    }
+
+
+                    /**
+                     * --------------------------------------------------------------------------
+                     * URL de détail
+                     * --------------------------------------------------------------------------
+                     */
+
+                    $detailUrl = sprintf(
+                        '/%s/%s/%s',
+                        trim($annonce['TYPE_SLUG'] ?? ''),
+                        trim($annonce['CITY_SLUG'] ?? ''),
+                        trim($annonce['SLUG'] ?? '')
+                    );
+
+
+                    /**
+                     * --------------------------------------------------------------------------
+                     * Prix
+                     * --------------------------------------------------------------------------
+                     */
+
+                    $displayPrice = $price;
+                    $displayCurrency = $currency;
+
+                    if ($currency === 'DZD') {
+
+                        if ($price > 9999999) {
+
+                            $displayPrice = round($price / 10000000, 2);
+                            $displayCurrency = 'Milliards';
+
+                        } elseif ($price > 19999) {
+
+                            $displayPrice = round($price / 10000, 2);
+                            $displayCurrency = 'Millions';
+                        }
+                    }
+
+                    $hasPrice = $price > 0;
+
+
+                    /**
+                     * --------------------------------------------------------------------------
+                     * Note
+                     * --------------------------------------------------------------------------
+                     */
+
+                    $hasRating = $rating > 0;
+
+                    $ratingFormatted = $hasRating
+                        ? number_format($rating, 1, '.', '')
+                        : '0';
+
+                    if ($k % 6 == 0) $i++;
+                    $openTag = ($k%3 == 0);
+                    $closeTag = ($k%3 == 2);
+                    $encId = \Albook\Library\Enigma::encrypt($annonce['ID'], 'aln1d');
+                    $tFiles = explode(';', $annonce['FILES']);
+                    if (!empty($tFiles[0])) {
+                        $fileSrc = DS . 'images' . DS . 'annonces' . DS . $annonce['ALN_CATEGORIES_ID'] . DS . $annonce['ALN_TYPES_ID'] . DS . '370x250' . DS . $tFiles[0];
+                        $img = '<img src="'.$fileSrc.'" class="img-responsive">';
+                    } else {
+                        $img = '<i class="fa fa-file-image-o" style="color: #D3CDF8; font-size: 6em; margin-top: 60px;"></i>';
+                    }
+                    if ($openTag): echo '<div class="row annonce-block aPage_'.$i.'">'; endif;
+                    ?>
+                    <div class="col-md-4 col-sm-6 col-xs-12 post-container" >
+                        <div class="post">
+                            <div class="post-media">
+                                <span class="rating-tag">
+                                    <i class="fa fa-tags" aria-hidden="true"></i>
+                                    <?= htmlspecialchars($type, ENT_QUOTES, 'UTF-8') ?>
+                                </span>
+                                <span class="actions-menu">
+                                    <span class="dropdown" style="margin: auto;">
+                                        <a class="main-link txt" href="#" data-toggle="dropdown">
+                                            <span class="icon">
+                                                <i class="fa fa-ellipsis-h"></i>
+                                            </span>
+                                        </a>
+                                        <ul role="menu" class="dropdown-menu">
+                                            <li>
+                                                <a href="<?php echo $detailUrl; ?>">
+                                                    <span class="fa fa-search"></span> <?php echo $this->translate('Afficher',__NAMESPACE__);?>
+                                                </a>
+                                            </li>
+                                            <li style="border-top: 1px solid #efefef; border-bottom: 1px solid #efefef;">
+                                                <a href="javascript:fctUpdateUserAds('<?php echo $encId; ?>');" style="color: #ccc;">
+                                                    <span class="fa fa-pencil"></span> <?php echo $this->translate('Modifier',__NAMESPACE__);?>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:fctDeleteUserAds('<?php echo $encId; ?>');">
+                                                    <span class="fa fa-remove"></span> <?php echo $this->translate('Supprimer',__NAMESPACE__);?>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </span>
+                                <span class="creation-date">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i> Publiée le <?php echo date('d M Y', strtotime($annonce['CREATE_DATE'])); ?>
+                                </span>
+                                <?php if ($imgCount > 0): ?>
+                                    <span class="rating-img-nbr">
+                                        <i class="fa fa-image" aria-hidden="true"></i>
+                                        <?= $imgCount ?>
+                                    </span>
+
+                                <?php endif; ?>
+                                <?php echo $img; ?>
+                            </div>
+
+                            <div class="post-desc">
+                                <div class="aln-flex-between">
+                                    <div>
+                                        <h4 class="clamp-text-2">
+                                            <?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?>
+                                        </h4>
+                                        <ul class="entry-meta">
+                                            <li class="address">
+                                                <i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>
+                                                <span>
+                                                    <?= htmlspecialchars(
+                                                        trim($commune . ', ' . $wilaya, ', '),
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>
+                                                </span>
+                                            </li>
+                                            <li class="address-detail">
+                                                <?  echo htmlspecialchars(
+                                                    trim($address) !== '' ? $address : '-',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )  ?>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="ads-rating">
+                                        <?php if($hasRating): ?>
+                                            <div>
+                                                <span class="ads-rating-container">
+                                                    <span class="rating-stars">
+                                                        <i class="fa fa-star active" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span class="rating-value">
+                                                        <?= $ratingFormatted ?>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="rating-reviews">
+                                                    (<?= $ratingNbr ?> avis)
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+
+                                <!-- Catégorie / détails -->
+                                <div class="aln-box-category-wrapper">
+
+                                    <div class="aln-box-category">
+
+                                        <div class="aln-box-category-inner">
+                                            <?= $this->catDetails($annonce) ?>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <hr>
+                                <ul class="rating-price">
+                                    <li>
+                                        <ul class="rating-price">
+                                            <li class="aln-price-card">
+                                                <div class="aln-price-main">
+
+                                                    <?php if ($hasPrice): ?>
+                                                        <span class="aln-price-label">À partir de</span>
+                                                        <div class="aln-price-value">
+                                                            <strong class="orange-txt">
+                                                                <?= htmlspecialchars(
+                                                                    (string) $displayPrice,
+                                                                    ENT_QUOTES,
+                                                                    'UTF-8'
+                                                                ) ?>
+                                                            </strong>
+                                                            <span class="orange-txt">
+                                                            <?= htmlspecialchars(
+                                                                $this->translate(
+                                                                    $displayCurrency,
+                                                                    __NAMESPACE__
+                                                                ),
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            ) ?>
+                                                        </span>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <span class="price-request orange-txt">
+                                                        Tarif sur demande
+                                                    </span>
+
+                                                    <?php endif; ?>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-bar-chart"></i>
+                                        <?php echo $annonce['NBR_VISIT']; ?>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-envelope-o"></i>
+                                        <?php echo $annonce['NBR_RESPONSE']; ?>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <?php if ($closeTag): echo '</div>'; endif; ?>
+                    <?php
+                endforeach;
+                if ($nbAds%3 != 0): echo '</div>'; endif;
+            endif;
+            ?>
+            <div class="col-sm-12">
+                <div id="annonces-selector">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="hidden-xs">
+    <?php echo $this->partial('ZfcUser/footer'); ?>
+</section>
+<script src="<?php echo $this->basePath() ?>/js/components/paginator/simplePagination.js"></script>
+<script src="<?php echo $this->basePath() ?>/js/zfcuser/user.js"></script>
+<script>
+    var nbItems = <?php echo $this->nbAds; ?>;
+    var perPage = 6;
+    $(function () {
+        $('.aPage_1').addClass('aPage_active')
+        for (var i = 2; i < nbItems / perPage + 1; i++) {
+            $('.aPage_' + i).hide();
+        }
+        $("#annonces-selector").pagination({
+            items: nbItems,
+            itemsOnPage: perPage,
+            cssStyle: 'light-theme',
+            onPageClick: function (pageNumber) {
+                $('.aPage_active').hide('slow').removeClass('aPage_active');
+                $('.aPage_' + pageNumber).show('slow').addClass('aPage_active');
+            }
+        });
+    });
+</script>
+<?php echo $this->partial('albook/footer-html'); ?>

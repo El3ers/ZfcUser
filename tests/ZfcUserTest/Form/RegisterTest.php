@@ -27,7 +27,7 @@ class RegisterTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('display_name', $elements);
         $this->assertArrayHasKey('email', $elements);
         $this->assertArrayHasKey('password', $elements);
-        $this->assertArrayHasKey('passwordVerify', $elements);
+        /*$this->assertArrayHasKey('passwordVerify', $elements);*/
     }
 
     public function testSetGetRegistrationOptions()

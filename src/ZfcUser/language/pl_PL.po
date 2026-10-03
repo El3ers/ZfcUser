@@ -3,13 +3,14 @@ msgstr ""
 "Project-Id-Version: ZfcUser\n"
 "Report-Msgid-Bugs-To: zf-devteam@zend.com\n"
 "POT-Creation-Date: 2013-11-08 00:38+0100\n"
-"PO-Revision-Date: 2014-02-27 13:22+0100\n"
+"PO-Revision-Date: 2015-10-04 16:49+0200\n"
 "Last-Translator: Thomas Szteliga <ts@websafe.pl>\n"
 "Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #: src/ZfcUser/language/msgIds.php:6
 msgid "Username"
@@ -77,9 +78,7 @@ msgstr "Konto o podanym identyfikatorze już istnieje"
 
 #: src/ZfcUser/language/msgIds.php:22
 msgid "Authentication failed. Please try again."
-msgstr ""
-"Logowanie nie powiodło się. "
-"Proszę spróbuj ponownie."
+msgstr "Logowanie nie powiodło się. Proszę spróbuj ponownie."
 
 #: view/zfc-user/user/login.phtml:31
 msgid "Not registered?"
@@ -101,8 +100,8 @@ msgstr "Pomyślnie zaktualizowano e-mail."
 #: view/zfc-user/user/changeemail.phtml:5
 msgid "Unable to update your email address. Please try again."
 msgstr ""
-"Nie udało się zaktualizować Twojego adresu e-mail. "
-"Proszę spróbuj ponownie."
+"Nie udało się zaktualizować Twojego adresu e-mail. Proszę spróbuj "
+"ponownie."
 
 #: view/zfc-user/user/changepassword.phtml:1
 #, php-format
@@ -116,8 +115,7 @@ msgstr "Pomyślnie zmieniono hasło."
 #: view/zfc-user/user/changepassword.phtml:5
 msgid "Unable to update your password. Please try again."
 msgstr ""
-"Nie udało się zaktualizować Twojego hasła. "
-"Proszę spróbuj ponownie."
+"Nie udało się zaktualizować Twojego hasła. Proszę spróbuj ponownie."
 
 #: view/zfc-user/user/index.phtml:2
 msgid "Hello"

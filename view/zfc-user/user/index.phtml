@@ -1,4 +1,110 @@
-<div style="float:left; padding-right:16px;"><?php echo $this->gravatar($this->zfcUserIdentity()->getEmail()) ?></div>
-<h3><?php echo $this->translate('Hello'); ?>, <?php echo $this->zfcUserDisplayName() ?>!</h3>
-<a href="<?php echo $this->url('zfcuser/logout') ?>">[<?php echo $this->translate('Sign Out'); ?>]</a>
-<div style="clear:both;"></div>
+<?php echo $this->partial('ZfcUser/header', ['subPage' => 'myDashboard']); ?>
+<section class="zfc-user-page">
+    <div class="container">
+        <div class="title bio">
+            <h3>
+                <span class="title-dot"></span>
+                Mon tableau de bord
+            </h3>
+        </div>
+        <div class="row">
+            <!-- fin menu -->
+            <div class="col-md-9 col-xs-12">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua">
+                            <div class="inner">
+                                <h3><?php echo $this->nbAds ?? 0; ?></h3>
+                                <p>Annonces</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-ios-paper"></i>
+                            </div>
+                            <a href="/user/myads" class="small-box-footer">Détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div><!-- ./col -->
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                <h3><?php echo $this->nbVisits ?? 0; ?></h3>
+                                <p>Visites</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-ios-paper-outline"></i>
+                            </div>
+                            <a href="/user/myads" class="small-box-footer">Détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div><!-- ./col -->
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-red">
+                            <div class="inner">
+                                <h3><?php echo $this->nbResponses ?? 0; ?></h3>
+                                <p>Réponses</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-model-s"></i>
+                            </div>
+                            <a href="/user/myads" class="small-box-footer">Détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div><!-- ./col -->
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-orange">
+                            <div class="inner">
+                                <h3><?php echo $this->ratingsInfo['RATINGS_NUMBER']; ?></h3>
+                                <p>Avis</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-ios-home"></i>
+                            </div>
+                            <a href="/user/myads" class="small-box-footer">Détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div><!-- ./col -->
+
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-yellow">
+                            <div class="inner">
+                                <h3><?php echo $this->ratingsInfo['RATINGS_AVERAGE']; ?></h3>
+                                <p>Note moyenne</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-ios-home"></i>
+                            </div>
+                            <a href="/user/myads" class="small-box-footer">Détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div><!-- ./col -->
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-gray">
+                            <div class="inner">
+                                <h3><?php echo $this->nbComments ?? 0; ?></h3>
+                                <p>Commentaires</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-model-s"></i>
+                            </div>
+                            <a href="/user/myads" class="small-box-footer">Détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div><!-- ./col -->
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 hidden-xs">
+                <img src="/img/pub/3/<?php echo rand (1, 5); ?>.png" style="max-width: 100%; border-radius: 20px;">
+                <?php //echo $this->ViewBanner('publier2',3); ?>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="hidden-xs">
+    <?php echo $this->partial('ZfcUser/footer'); ?>
+</section>
+<script src="<?php echo $this->basePath() ?>/js/zfcuser/user.js"></script>
+
+<?php echo $this->partial('albook/footer-html'); ?>

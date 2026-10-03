@@ -50,7 +50,7 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetLogoutRedirectRoute()
     {
-        $this->assertSame('zfcuser/login', $this->options->getLogoutRedirectRoute());
+        $this->assertSame('zfcuser/thawourth26', $this->options->getLogoutRedirectRoute());
     }
 
     /**

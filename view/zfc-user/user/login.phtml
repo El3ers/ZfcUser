@@ -1,32 +1,40 @@
-<h1><?php echo $this->translate('Sign In'); ?></h1>
-
 <?php
 $form = $this->loginForm;
 $form->prepare();
-$form->setAttribute('action', $this->url('zfcuser/login'));
+$form->setAttribute('action', $this->url('zfcuser/thawourth26'));
 $form->setAttribute('method', 'post');
+$form->setAttribute('style', 'width:100%');
+$form->setAttribute('role', 'form');
+$form->get('submit')->setAttribute('class', 'btn btn-lg btn-primary btn-block');
 ?>
+<section style="display:flex; position: absolute;left: 0;top: 0;right: 0;bottom:0;background: #eee;">
+    <div class="container" style="margin: auto">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="card" style="margin-bottom: 15px;">
+                    <div style="text-align: center; width: 100%">
+                        <a href="#" onclick="return fctRedirect('<?php echo $this->url('albook') ?>');">
+                            <img src="/img/logo.png" style="height: 100px;">
+                        </a>
+                    </div>
+                    <h3><?php echo $this->translate('Please Sign In'); ?></h3>
+                    <?php echo $this->form()->openTag($form)?>
+                        <div class="form-group">
+                            <input class="form-control" type="email" required="required" autofocus="" name="identity" placeholder="<?php echo $this->translate('Email'); ?>">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="password" required="required" value="" name="credential" placeholder="<?php echo $this->translate('Password'); ?>">
+                        </div>
+                        <div>
+                            <?php echo $this->formInput($form->get('submit'))?>
+                        </div>
+                    <?php echo $this->form()->closeTag($form)?>
+                </div>
+                <div style="text-align: center">
+                    <small> <i class="fa fa-copyright"></i> 2026 El3ers. <?php echo $this->translate('All rights reserved.') ?></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<?php echo $this->form()->openTag($form) ?>
-
-    <dl class="zend_form">
-        <?php echo $this->formElementErrors($form->get('identity')) ?>
-
-        <dt><?php echo $this->formLabel($form->get('identity')) ?></dt>
-        <dd><?php echo $this->formInput($form->get('identity')) ?></dd>
-
-        <dt><?php echo $this->formLabel($form->get('credential')) ?></dt>
-        <dd><?php echo $this->formInput($form->get('credential')) ?></dd>
-
-        <?php if ($this->redirect): ?>
-            <input type="hidden" name="redirect" value="<?php echo $this->escapeHtml($this->redirect) ?>" />
-        <?php endif ?>
-
-        <dd><?php echo $this->formButton($form->get('submit')) ?></dd>
-    </dl>
-
-<?php echo $this->form()->closeTag() ?>
-
-<?php if ($this->enableRegistration) : ?>
-<?php echo $this->translate('Not registered?'); ?> <a href="<?php echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->redirect : '') ?>"><?php echo $this->translate('Sign up!'); ?></a>
-<?php endif; ?>

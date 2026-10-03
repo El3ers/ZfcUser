@@ -8,6 +8,9 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+use Zend\Mail\Transport\Smtp;
+use Zend\Mail\Transport\SmtpOptions;
+
 class Module implements
     AutoloaderProviderInterface,
     ConfigProviderInterface,
@@ -82,6 +85,7 @@ class Module implements
                 'ZfcUser\Authentication\Storage\Db' => 'ZfcUser\Authentication\Storage\Db',
                 'ZfcUser\Form\Login'                => 'ZfcUser\Form\Login',
                 'zfcuser_user_service'              => 'ZfcUser\Service\User',
+                'zfcuser_identity_service'          => 'ZfcUser\Service\Identity',
                 'zfcuser_register_form_hydrator'    => 'Zend\Stdlib\Hydrator\ClassMethods',
             ),
             'factories' => array(
@@ -133,7 +137,12 @@ class Module implements
                     $form->setInputFilter(new Form\ChangePasswordFilter($options));
                     return $form;
                 },
-
+                'zfcuser_change_information_form' => function ($sm) {
+                    $options = $sm->get('zfcuser_module_options');
+                    $form = new Form\ChangeInformation(null, $sm->get('zfcuser_module_options'));
+                    $form->setInputFilter(new Form\ChangeInformationFilter($options));
+                    return $form;
+                },
                 'zfcuser_change_email_form' => function ($sm) {
                     $options = $sm->get('zfcuser_module_options');
                     $form = new Form\ChangeEmail(null, $options);
@@ -162,6 +171,16 @@ class Module implements
                     $mapper->setTableName($options->getTableName());
                     return $mapper;
                 },
+                'zfcuser_identity_mapper' => function ($sm) {
+                    $mapper = new Mapper\Identity();
+                    $mapper->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
+                    $entityClass = 'ZfcUser\Entity\Identity';
+                    $mapper->setEntityPrototype(new $entityClass);
+                    $mapper->setHydrator(new Mapper\IdentityHydrator());
+                    $mapper->setTableName('ALB_IDENTITIES');
+                    return $mapper;
+                },
+
             ),
         );
     }

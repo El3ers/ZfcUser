@@ -2,6 +2,7 @@
 
 namespace ZfcUser\Options;
 
+use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Stdlib\AbstractOptions;
 
 class ModuleOptions extends AbstractOptions implements
@@ -26,7 +27,7 @@ class ModuleOptions extends AbstractOptions implements
     /**
      * @var string
      */
-    protected $logoutRedirectRoute = 'zfcuser/login';
+    protected $logoutRedirectRoute = 'zfcuser/thawourth26';
 
     /**
      * @var int
@@ -76,6 +77,11 @@ class ModuleOptions extends AbstractOptions implements
     /**
      * @var string
      */
+    protected $identityEntityClass = 'ZfcUser\Entity\Identity';
+
+    /**
+     * @var string
+     */
     protected $userLoginWidgetViewTemplate = 'zfc-user/user/login.phtml';
 
     /**
@@ -107,7 +113,7 @@ class ModuleOptions extends AbstractOptions implements
      * @var string
      */
 
-    protected $tableName = 'user';
+    protected $tableName = 'ALB_USERS';
 
     /**
      * @var array
@@ -119,6 +125,16 @@ class ModuleOptions extends AbstractOptions implements
             'expiration' => 300,
             'timeout'    => 300,
         ),
+    );
+
+    /**
+     * @var array
+     */
+    private $_rootes = array(
+        1   => 'albook',
+        2   => 'zfcuser',
+        3   => 'albadmin',
+        5   => 'albmanager'
     );
 
     /**
@@ -163,6 +179,17 @@ class ModuleOptions extends AbstractOptions implements
     public function getLogoutRedirectRoute()
     {
         return $this->logoutRedirectRoute;
+    }
+    
+    /**
+     * get specific login redirect route
+     * @param int $profileId
+     */
+    public function getRedirectRoute($profileId)
+    {
+        return isset($this->_rootes[$profileId])?
+            $this->_rootes[$profileId]:
+            $this->getLoginRedirectRoute();
     }
 
     /**
@@ -493,6 +520,18 @@ class ModuleOptions extends AbstractOptions implements
     public function getUserEntityClass()
     {
         return $this->userEntityClass;
+    }
+    
+    
+    public function setIdentityEntityClass($identityEntityClass)
+    {
+    	$this->identityEntityClass = $identityEntityClass;
+    }
+    
+    
+    public function getIdentityEntityClass()
+    {
+    	return $this->identityEntityClass;
     }
 
     /**
