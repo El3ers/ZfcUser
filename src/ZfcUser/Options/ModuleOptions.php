@@ -113,7 +113,7 @@ class ModuleOptions extends AbstractOptions implements
      * @var string
      */
 
-    protected $tableName = 'ALB_USERS';
+    protected $tableName = 'alb_users';
 
     /**
      * @var array

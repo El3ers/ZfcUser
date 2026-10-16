@@ -8,11 +8,10 @@ use Zend\Stdlib\Hydrator\HydratorInterface;
 
 class User extends AbstractDbMapper implements UserInterface
 {
-    protected $tableName  = 'ALB_USERS';
+    protected $tableName  = 'alb_users';
 
     public function findByEmail($email)
     {
-        return $this->findByUsername($email);
         $select = $this->getSelect()
                        ->where(array('email' => $email));
 
@@ -23,39 +22,18 @@ class User extends AbstractDbMapper implements UserInterface
 
     public function findByUsername($username, $loadIdentity = false)
     {
-        $select = $this->getSelect()
-                       ->where(array('USERNAME' => $username));
-
-        $entity = $this->select($select)->current();
-        $this->getEventManager()->trigger('find', $this, array('entity' => $entity));
-
-        // Load identity
-        if ($loadIdentity) {
-            $identityId = $entity->getAlbIdentitiesId();
-            $this->tableName = 'ALB_IDENTITIES';
-            $select = $this->getSelect()->where(array('ID' => $identityId));
-            $oIdentity = $this->select($select)->current();
-            $entity->setFirstname($oIdentity->getFirstname());
-            $entity->setLastname($oIdentity->getLastname());
-            $entity->setEmail($oIdentity->getEmail());
-            $entity->setPhoneMobile($oIdentity->getPhoneMobile());
-            $entity->setBirthDate($oIdentity->getBirthDate());
-            $entity->setSexe($oIdentity->getSexe());
-            $entity->setAvatar($oIdentity->getAvatar());
-            $this->tableName = 'ALB_USERS';
-        }
-        return $entity;
+        return $this->findByEmail($username, $loadIdentity);
     }
 
     public function findById($id, $loadIdentity = false)
     {
         $select = $this->getSelect()
-                       ->where(array('ID' => $id));
+                       ->where(array('id' => $id));
 
         $entity = $this->select($select)->current();
         $this->getEventManager()->trigger('find', $this, array('entity' => $entity));
 
-        // Load identity
+        // Load identity (firstname, lastname, phone, etc. depuis ALB_IDENTITIES)
         if ($loadIdentity) {
             $identityId = $entity->getAlbIdentitiesId();
             $this->tableName = 'ALB_IDENTITIES';
@@ -63,12 +41,11 @@ class User extends AbstractDbMapper implements UserInterface
             $oIdentity = $this->select($select)->current();
             $entity->setFirstname($oIdentity->getFirstname());
             $entity->setLastname($oIdentity->getLastname());
-            $entity->setEmail($oIdentity->getEmail());
             $entity->setPhoneMobile($oIdentity->getPhoneMobile());
             $entity->setBirthDate($oIdentity->getBirthDate());
             $entity->setSexe($oIdentity->getSexe());
             $entity->setAvatar($oIdentity->getAvatar());
-            $this->tableName = 'ALB_USERS';
+            $this->tableName = 'alb_users';
         }
         return $entity;
     }
@@ -116,7 +93,7 @@ class User extends AbstractDbMapper implements UserInterface
     public function update($entity, $where = null, $tableName = null, HydratorInterface $hydrator = null)
     {
         if (!$where) {
-            $where = array('ID' => $entity->getId());
+            $where = array('id' => $entity->getId());
         }
 
         return parent::update($entity, $where, $tableName, $hydrator);

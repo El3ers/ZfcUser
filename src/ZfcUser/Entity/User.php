@@ -55,6 +55,11 @@ class User extends Identity implements UserInterface
      */
     protected $_type;
 
+    /**
+     * @var string
+     */
+    protected $_rememberToken;
+
 
     /**
      * Constructor
@@ -254,6 +259,39 @@ class User extends Identity implements UserInterface
         return $this->_type;
     }
 
+    // Alias hydrator pour colonne `name` (nouvelle table alb_users)
+    public function getName()
+    {
+        return $this->_username;
+    }
 
+    public function setName($name)
+    {
+        $this->_username = $name;
+        return $this;
+    }
+
+    // Alias hydrator pour colonne `alb_identites_id` (typo dans nouvelle table)
+    public function getAlbIdentitesId()
+    {
+        return $this->_identityId;
+    }
+
+    public function setAlbIdentitesId($identityId)
+    {
+        $this->_identityId = $identityId;
+        return $this;
+    }
+
+    public function getRememberToken()
+    {
+        return $this->_rememberToken;
+    }
+
+    public function setRememberToken($token)
+    {
+        $this->_rememberToken = $token;
+        return $this;
+    }
 
 }
