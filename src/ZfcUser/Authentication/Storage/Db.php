@@ -97,6 +97,8 @@ class Db implements Storage\StorageInterface, ServiceManagerAwareInterface
     public function write($contents)
     {
         $this->resolvedIdentity = null;
+        $session = new SessionContainer('Albook_Auth');
+        $session->offsetUnset('identity');
         $this->getStorage()->write($contents);
     }
 
@@ -109,6 +111,8 @@ class Db implements Storage\StorageInterface, ServiceManagerAwareInterface
     public function clear()
     {
         $this->resolvedIdentity = null;
+        $session = new SessionContainer('Albook_Auth');
+        $session->offsetUnset('identity');
         $this->getStorage()->clear();
     }
 

@@ -4,11 +4,20 @@ namespace ZfcUser\Mapper;
 
 use ZfcBase\Mapper\AbstractDbMapper;
 use ZfcUser\Entity\UserInterface as UserEntityInterface;
+use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 
 class User extends AbstractDbMapper implements UserInterface
 {
     protected $tableName  = 'alb_users';
+
+    public function getHydrator()
+    {
+        if (!$this->hydrator) {
+            $this->hydrator = new ClassMethods(true);
+        }
+        return $this->hydrator;
+    }
 
     public function findByEmail($email)
     {
@@ -39,12 +48,14 @@ class User extends AbstractDbMapper implements UserInterface
             $this->tableName = 'ALB_IDENTITIES';
             $select = $this->getSelect()->where(array('ID' => $identityId));
             $oIdentity = $this->select($select)->current();
-            $entity->setFirstname($oIdentity->getFirstname());
-            $entity->setLastname($oIdentity->getLastname());
-            $entity->setPhoneMobile($oIdentity->getPhoneMobile());
-            $entity->setBirthDate($oIdentity->getBirthDate());
-            $entity->setSexe($oIdentity->getSexe());
-            $entity->setAvatar($oIdentity->getAvatar());
+            if ($oIdentity) {
+                $entity->setFirstname($oIdentity->getFirstname());
+                $entity->setLastname($oIdentity->getLastname());
+                $entity->setPhoneMobile($oIdentity->getPhoneMobile());
+                $entity->setBirthDate($oIdentity->getBirthDate());
+                $entity->setSexe($oIdentity->getSexe());
+                $entity->setAvatar($oIdentity->getAvatar());
+            }
             $this->tableName = 'alb_users';
         }
         return $entity;

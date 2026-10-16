@@ -395,7 +395,16 @@ class UserController extends AbstractController
             return $result;
         }
 
-        $auth = $this->zfcUserAuthentication()->getAuthService()->authenticate($adapter);
+        try {
+            $auth = $this->zfcUserAuthentication()->getAuthService()->authenticate($adapter);
+        } catch (\Exception $ex) {
+            $adapter->resetAdapters();
+            return new JsonModel(array(
+                'errors' => 'ok',
+                'alert' => 'Erreur serveur lors de l\'authentification.'
+            ));
+        }
+
         if (!$auth->isValid()) {
             $adapter->resetAdapters();
             return new JsonModel(
@@ -410,9 +419,13 @@ class UserController extends AbstractController
             return new JsonModel(array('url' => $redirect));
         }
 
-        $route = $this->getOptions()->getRedirectRoute(
-            $this->zfcUserAuthentication()->getIdentity()->getAlbProfilesId()
-        );
+        try {
+            $identity = $this->zfcUserAuthentication()->getIdentity();
+            $profileId = $identity ? $identity->getAlbProfilesId() : null;
+            $route = $this->getOptions()->getRedirectRoute($profileId);
+        } catch (\Exception $ex) {
+            $route = $this->getOptions()->getLoginRedirectRoute();
+        }
 
         if (is_callable($route)) {
             $route = $route($this->zfcUserAuthentication()->getIdentity());
