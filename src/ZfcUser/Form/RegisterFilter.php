@@ -23,52 +23,65 @@ class RegisterFilter extends ProvidesEventsInputFilter
         $this->usernameValidator = $usernameValidator;
 
         $this->add(array(
-            'name'       => 'firstname',
-            'filters'    => array(array('name' => 'StringTrim')),
-            'validators' => array(
+            'name'        => 'firstname',
+            'required'    => false,
+            'allow_empty' => true,
+            'filters'     => array(array('name' => 'StringTrim')),
+            'validators'  => array(
                 array(
-                    'name' => 'NotEmpty',
+                    'name'    => 'Callback',
                     'options' => array(
-                        /*'messages' => array(
-                            'isEmpty' => 'Votre nom est obligatoire',
-                        ),*/
+                        'callback' => function($value, $context = array()) {
+                            if (isset($context['type']) && $context['type'] == 2) {
+                                return true;
+                            }
+                            $v = trim($value);
+                            return $v !== '' && mb_strlen($v) >= 3 && mb_strlen($v) <= 45;
+                        },
                     ),
                 ),
-                array(
-                    'name'    => 'StringLength',
-                    'options' => array(
-                        'encoding' => 'UTF-8',
-                        'max'      => 45,
-                        /*'messages' => array(
-                            'stringLengthTooLong'  => 'Votre nom ne doit pas dépasser 45 caractéres'
-                        ),*/
-                    ),
-                )
             ),
         ));
 
         $this->add(array(
-            'name'       => 'lastname',
-            'filters'    => array(array('name' => 'StringTrim')),
-            'validators' => array(
+            'name'        => 'lastname',
+            'required'    => false,
+            'allow_empty' => true,
+            'filters'     => array(array('name' => 'StringTrim')),
+            'validators'  => array(
                 array(
-                    'name' => 'NotEmpty',
+                    'name'    => 'Callback',
                     'options' => array(
-                        /*'messages' => array(
-                            'isEmpty' => 'Votre nom est obligatoire',
-                        ),*/
+                        'callback' => function($value, $context = array()) {
+                            if (isset($context['type']) && $context['type'] == 2) {
+                                return true;
+                            }
+                            $v = trim($value);
+                            return $v !== '' && mb_strlen($v) >= 3 && mb_strlen($v) <= 45;
+                        },
                     ),
                 ),
+            ),
+        ));
+
+        $this->add(array(
+            'name'        => 'company',
+            'required'    => false,
+            'allow_empty' => true,
+            'filters'     => array(array('name' => 'StringTrim')),
+            'validators'  => array(
                 array(
-                    'name'    => 'StringLength',
+                    'name'    => 'Callback',
                     'options' => array(
-                        'encoding' => 'UTF-8',
-                        'max'      => 45,
-                        /*'messages' => array(
-                            'stringLengthTooLong'  => 'Votre nom ne doit pas dépasser 45 caractéres'
-                        ),*/
+                        'callback' => function($value, $context = array()) {
+                            if (!isset($context['type']) || $context['type'] != 2) {
+                                return true;
+                            }
+                            $v = trim($value);
+                            return $v !== '' && mb_strlen($v) >= 3 && mb_strlen($v) <= 150;
+                        },
                     ),
-                )
+                ),
             ),
         ));
 
@@ -91,16 +104,16 @@ class RegisterFilter extends ProvidesEventsInputFilter
             ));
         }
 
-        /*$this->add(array(
-            'name'       => 'email',
+        $this->add(array(
+            'name'       => 'username',
             'required'   => true,
+            'filters'    => array(array('name' => 'StringTrim')),
             'validators' => array(
                 array(
-                    'name' => 'EmailAddress'
+                    'name' => 'EmailAddress',
                 ),
-                //$this->emailValidator
             ),
-        ));*/
+        ));
 
         /*if ($this->getOptions()->getEnableDisplayName()) {
             $this->add(array(
@@ -159,9 +172,15 @@ class RegisterFilter extends ProvidesEventsInputFilter
             'filters'    => array(array('name' => 'StringTrim')),
             'validators' => array(
                 array(
-                    'name'    => 'StringLength',
+                    'name'    => 'Callback',
                     'options' => array(
-                        'min' => 6,
+                        'callback' => function($value) {
+                            $v = preg_replace('/\s/', '', $value);
+                            if (preg_match('/^0[567]/', $v)) {
+                                return (bool) preg_match('/^0[567]\d{8}$/', $v);
+                            }
+                            return (bool) preg_match('/^\+?[\d\s\-(). ]{8,}$/', $value);
+                        },
                     ),
                 ),
             ),
