@@ -28,20 +28,13 @@ class ProRegisterFilter extends ProvidesEventsInputFilter
             'validators' => array(
                 array(
                     'name' => 'NotEmpty',
-                    'options' => array(
-                        /*'messages' => array(
-                            'isEmpty' => 'Votre nom est obligatoire',
-                        ),*/
-                    ),
                 ),
                 array(
                     'name'    => 'StringLength',
                     'options' => array(
                         'encoding' => 'UTF-8',
-                        'max'      => 45,
-                        /*'messages' => array(
-                            'stringLengthTooLong'  => 'Votre nom ne doit pas dépasser 45 caractéres'
-                        ),*/
+                        'min'      => 3,
+                        'max'      => 150,
                     ),
                 )
             ),
@@ -64,16 +57,16 @@ class ProRegisterFilter extends ProvidesEventsInputFilter
             ));
         }
 
-        /*$this->add(array(
-            'name'       => 'email',
+        $this->add(array(
+            'name'       => 'username',
             'required'   => true,
+            'filters'    => array(array('name' => 'StringTrim')),
             'validators' => array(
                 array(
-                    'name' => 'EmailAddress'
+                    'name' => 'EmailAddress',
                 ),
-                //$this->emailValidator
             ),
-        ));*/
+        ));
 
         /*if ($this->getOptions()->getEnableDisplayName()) {
             $this->add(array(
@@ -105,7 +98,6 @@ class ProRegisterFilter extends ProvidesEventsInputFilter
                 ),
             ),
         ));
-/*
         $this->add(array(
             'name'       => 'passwordVerify',
             'required'   => true,
@@ -124,7 +116,7 @@ class ProRegisterFilter extends ProvidesEventsInputFilter
                     ),
                 ),
             ),
-        ));*/
+        ));
 
         $this->add(array(
             'name'       => 'mobilephone',
@@ -132,9 +124,15 @@ class ProRegisterFilter extends ProvidesEventsInputFilter
             'filters'    => array(array('name' => 'StringTrim')),
             'validators' => array(
                 array(
-                    'name'    => 'StringLength',
+                    'name'    => 'Callback',
                     'options' => array(
-                        'min' => 6,
+                        'callback' => function($value) {
+                            $v = preg_replace('/\s/', '', $value);
+                            if (preg_match('/^0[567]/', $v)) {
+                                return (bool) preg_match('/^0[567]\d{8}$/', $v);
+                            }
+                            return (bool) preg_match('/^\+?[\d\s\-(). ]{8,}$/', $value);
+                        },
                     ),
                 ),
             ),
