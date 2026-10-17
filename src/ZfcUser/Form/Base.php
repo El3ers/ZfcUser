@@ -17,7 +17,7 @@ class Base extends ProvidesEventsForm
             'type' => 'Zend\Form\Element\Radio',
             'attributes' => array(
                 'type'    => 'radio',
-                'value'   => 1,
+                'value'   => 2,
                 'onchange' => 'fctChangeAccountType();'
             ),
             'options' => array(
@@ -27,8 +27,8 @@ class Base extends ProvidesEventsForm
                     'class'  => 'radio-inline'
                 ),
                 'value_options' => array(
-                    1 => 'Particular',
-                    2 => 'Professional'
+                    2 => 'Professional',
+                    1 => 'Particular'
                 ),
             ),
         ));
@@ -62,7 +62,7 @@ class Base extends ProvidesEventsForm
                 'type'        => 'text',
                 'id'          => 'company',
                 'class'       => 'form-control',
-                'placeholder' => 'Company',
+                'placeholder' => 'Nom ou raison sociale',
                 'required'    => true
             ),
         ));
@@ -144,7 +144,6 @@ class Base extends ProvidesEventsForm
             ),
         ));
 
-        /*
         $this->add(array(
             'name' => 'passwordVerify',
             'options' => array(
@@ -157,7 +156,7 @@ class Base extends ProvidesEventsForm
                 'placeholder' => 'Password confirmation',
                 'required'    => true
             ),
-        )); */
+        ));
 
         $this->add(array(
             'name' => 'mobilephone',

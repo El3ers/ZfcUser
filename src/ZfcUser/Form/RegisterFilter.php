@@ -133,7 +133,6 @@ class RegisterFilter extends ProvidesEventsInputFilter
             ),
         ));
 
-        /*
         $this->add(array(
             'name'       => 'passwordVerify',
             'required'   => true,
@@ -152,7 +151,7 @@ class RegisterFilter extends ProvidesEventsInputFilter
                     ),
                 ),
             ),
-        ));*/
+        ));
 
         $this->add(array(
             'name'       => 'mobilephone',
