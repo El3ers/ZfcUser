@@ -6,6 +6,8 @@ use ZfcBase\Mapper\AbstractDbMapper;
 use ZfcUser\Entity\UserInterface as UserEntityInterface;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Stdlib\Hydrator\Filter\FilterComposite;
+use Zend\Stdlib\Hydrator\Filter\MethodMatchFilter;
 
 class User extends AbstractDbMapper implements UserInterface
 {
@@ -15,6 +17,9 @@ class User extends AbstractDbMapper implements UserInterface
     {
         if (!$this->hydrator) {
             $this->hydrator = new ClassMethods(true);
+            // Exclure les anciennes méthodes remplacées par leurs alias (getName, getAlbIdentitesId)
+            $this->hydrator->addFilter('excludeOldColumns', new MethodMatchFilter('getUsername'), FilterComposite::CONDITION_AND);
+            $this->hydrator->addFilter('excludeOldIdentityId', new MethodMatchFilter('getAlbIdentitiesId'), FilterComposite::CONDITION_AND);
         }
         return $this->hydrator;
     }
