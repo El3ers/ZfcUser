@@ -104,7 +104,7 @@ class Base extends ProvidesEventsForm
                 'type'        => 'text',
                  'id'         => 'username',
                 'class'       => 'form-control',
-                'placeholder' => 'Email',
+                'placeholder' => 'E-mail',
                 'required'    => true
             ),
         ));
