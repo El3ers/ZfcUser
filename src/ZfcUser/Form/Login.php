@@ -31,7 +31,7 @@ class Login extends ProvidesEventsForm
             'attributes' => array(
                 'type'        => 'text',
                 'class'       => 'form-control',
-                'placeholder' => 'Email',
+                'placeholder' => 'E-mail',
                 'required'    => true
             ),
         ));
