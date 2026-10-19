@@ -76,6 +76,22 @@ class User extends AbstractDbMapper implements UserInterface
         $this->tableName = $tableName;
     }
 
+    protected function entityToArray($entity, HydratorInterface $hydrator = null)
+    {
+        $data = parent::entityToArray($entity, $hydrator);
+        unset($data['username']);
+        unset($data['alb_identities_id']);
+        unset($data['first_name']);
+        unset($data['last_name']);
+        unset($data['birth_date']);
+        unset($data['sexe']);
+        unset($data['phone']);
+        unset($data['phone_mobile']);
+        unset($data['alb_address_id']);
+        unset($data['avatar']);
+        return $data;
+    }
+
     public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
         $result = parent::insert($entity, $tableName, $hydrator);
