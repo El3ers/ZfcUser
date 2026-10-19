@@ -17,9 +17,7 @@ class User extends AbstractDbMapper implements UserInterface
     {
         if (!$this->hydrator) {
             $this->hydrator = new ClassMethods(true);
-            // Exclure les anciennes méthodes remplacées par leurs alias (getName, getAlbIdentitesId)
             $this->hydrator->addFilter('excludeOldColumns', new MethodMatchFilter('getUsername'), FilterComposite::CONDITION_AND);
-            $this->hydrator->addFilter('excludeOldIdentityId', new MethodMatchFilter('getAlbIdentitiesId'), FilterComposite::CONDITION_AND);
         }
         return $this->hydrator;
     }
@@ -80,7 +78,6 @@ class User extends AbstractDbMapper implements UserInterface
     {
         $data = parent::entityToArray($entity, $hydrator);
          unset($data['username']);
-         unset($data['alb_identities_id']);
          unset($data['first_name']);
          unset($data['last_name']);
          unset($data['birth_date']);

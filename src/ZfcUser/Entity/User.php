@@ -271,18 +271,6 @@ class User extends Identity implements UserInterface
         return $this;
     }
 
-    // Alias hydrator pour colonne `alb_identites_id` (typo dans nouvelle table)
-    public function getAlbIdentitesId()
-    {
-        return $this->_identityId;
-    }
-
-    public function setAlbIdentitesId($identityId)
-    {
-        $this->_identityId = $identityId;
-        return $this;
-    }
-
     public function getRememberToken()
     {
         return $this->_rememberToken;
